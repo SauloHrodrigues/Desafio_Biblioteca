@@ -1,0 +1,8 @@
+services:
+  postgres:
+    container_name: 'db_biblioteca'
+    image: 'postgres:latest'
+    env_file:
+      - .env
+    ports:
+      - '5434:5432'
