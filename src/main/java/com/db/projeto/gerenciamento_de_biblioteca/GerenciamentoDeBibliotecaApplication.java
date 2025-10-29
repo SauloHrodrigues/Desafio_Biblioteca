@@ -1,4 +1,4 @@
-package com.db.projeto.GerenciamentoDeBiblioteca;
+package com.db.projeto.gerenciamento_de_biblioteca;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
