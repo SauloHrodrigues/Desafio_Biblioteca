@@ -1,8 +1,6 @@
 package com.db.projeto.gerenciamento_de_biblioteca.controller.intefaces_swagger;
 
-import com.db.projeto.gerenciamento_de_biblioteca.dto.livro.LivroAtualizacoesDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.livro.LivroResponseDto;
-import com.db.projeto.gerenciamento_de_biblioteca.dto.livro.NovoLivroDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.locatario.LocatarioAtualizacoesDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.locatario.LocatarioResponseDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.locatario.NovoLocatarioDto;
@@ -18,11 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Locatario", description = "Endpoints para gerenciar locatarios")
@@ -31,14 +25,12 @@ public interface LocatarioSwaggerI {
     @Operation(summary = "Cadastra um novo locatario")
     @ApiResponse(responseCode = "201", description = "Locatario cadastrado com sucesso.",
             content = @Content(schema = @Schema(implementation = LivroResponseDto.class)))
-    @PostMapping()
     ResponseEntity<LocatarioResponseDto> cadastrar(@Valid @RequestBody NovoLocatarioDto dto);
 
 
     @Operation(summary = "Atualiza um locatario existente no banco")
     @ApiResponse(responseCode = "200", description = "Retorna o locatario atualizado no banco.",
             content = @Content(schema = @Schema(implementation = LocatarioResponseDto.class)))
-    @PutMapping("/{id}")
     ResponseEntity<LocatarioResponseDto> atualizarUmLocatario(
             @Parameter(description = "ID do locatario a ser atualizado", example = "32")
             @PathVariable Long id,
@@ -48,7 +40,6 @@ public interface LocatarioSwaggerI {
     @Operation(summary = "Exclui um locatário existente no banco")
     @ApiResponse(responseCode = "204", description = "Locatário excluído com sucesso.")
     @ApiResponse(responseCode = "404", description = "Locatário não encontrado.")
-    @DeleteMapping("/{id}")
     ResponseEntity<Void> deletar(
             @Parameter(description = "ID do Locatário", example = "2")
             @PathVariable Long id);
@@ -60,7 +51,6 @@ public interface LocatarioSwaggerI {
                     mediaType = "application/json",
                     array = @ArraySchema(schema = @Schema(implementation = LocatarioResponseDto.class))
             ))
-    @GetMapping
     ResponseEntity<Page<LivroResponseDto>> retornarTodosLocatariosCadastrados(
             @Parameter(description = "Parâmetros de paginação e ordenação")
             @PageableDefault(size = 10, sort = {"nome"}) Pageable pageable);
@@ -70,7 +60,6 @@ public interface LocatarioSwaggerI {
     @ApiResponse(responseCode = "200", description = "Retorna um locatário buscado.",
             content = @Content(schema = @Schema(implementation = LocatarioResponseDto.class)))
     @ApiResponse(responseCode = "404", description = "Locatário não encontrado.")
-    @GetMapping("/{id}")
     ResponseEntity<LocatarioResponseDto> buscarUmLocatarioPorId(
             @Parameter(description = "ID do locatário a ser buscado", example = "5")
             @PathVariable Long id);
@@ -82,8 +71,7 @@ public interface LocatarioSwaggerI {
                     mediaType = "application/json",
                     array = @ArraySchema(schema = @Schema(implementation = LivroResponseDto.class))
             ))
-    @GetMapping("/{id}")
-    ResponseEntity<Page<LivroResponseDto>> retornarTodoAlugueiDoLocatario(
+    ResponseEntity<Page<LivroResponseDto>> retornarTodosOsAlugueisDoLocatario(
             @Parameter(description = "Retorna os aluguéis do locatario")
             @PathVariable Long id,
             @Parameter(description = "Parâmetros de paginação e ordenação")

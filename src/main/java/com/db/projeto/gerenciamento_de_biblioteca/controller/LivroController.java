@@ -8,6 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,42 +23,50 @@ import org.springframework.web.bind.annotation.RestController;
 public class LivroController implements LivroSwaggerI {
 
     @Override
+    @PostMapping
     public ResponseEntity<LivroResponseDto> cadastrar(NovoLivroDto dto) {
         return null;
     }
 
     @Override
-    public ResponseEntity<LivroResponseDto> atualizarUmLivro(Long id, LivroAtualizacoesDto atualizacoes) {
+    @PutMapping("/{id}")
+    public ResponseEntity<LivroResponseDto> atualizarUmLivro(@PathVariable Long id,@RequestBody LivroAtualizacoesDto atualizacoes) {
         return null;
     }
 
     @Override
-    public ResponseEntity<Void> deletar(Long id) {
+    @DeleteMapping("/id")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         return null;
     }
 
     @Override
+    @GetMapping
     public ResponseEntity<Page<LivroResponseDto>> retornarTodosLivrosCadastrados(Pageable pageable) {
         return null;
     }
 
     @Override
-    public ResponseEntity<LivroResponseDto> buscarUmLivroPorId(Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<LivroResponseDto> buscarUmLivroPorId(@PathVariable Long id) {
         return null;
     }
 
     @Override
-    public ResponseEntity<LivroResponseDto> buscarLivroPeloTitulo(String titulo) {
+    @GetMapping("/titulo/{titulo}")
+    public ResponseEntity<LivroResponseDto> buscarLivroPeloTitulo(@PathVariable String titulo) {
         return null;
     }
 
     @Override
-    public ResponseEntity<Page<LivroResponseDto>> retornarLivrosCadastradosPorCategoria(String categoria, Pageable pageable) {
+    @GetMapping("/Categoria/{categoria}")
+    public ResponseEntity<Page<LivroResponseDto>> retornarLivrosCadastradosPorCategoria(@PathVariable String categoria, Pageable pageable) {
         return null;
     }
 
     @Override
-    public ResponseEntity<Page<LivroResponseDto>> retornarLivrosCadastradosPorAutor(String autor, Pageable pageable) {
+    @GetMapping("/autor/{autor}")
+    public ResponseEntity<Page<LivroResponseDto>> retornarLivrosCadastradosPorAutor(@PathVariable String autor, Pageable pageable) {
         return null;
     }
 }

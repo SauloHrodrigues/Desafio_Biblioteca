@@ -28,13 +28,11 @@ public interface LivroSwaggerI {
     @Operation(summary = "Cadastra um novo livro")
     @ApiResponse(responseCode = "201", description = "Livro cadastrado com sucesso.",
             content = @Content(schema = @Schema(implementation = LivroResponseDto.class)))
-    @PostMapping()
     ResponseEntity<LivroResponseDto> cadastrar(@Valid @RequestBody NovoLivroDto dto);
 
     @Operation(summary = "Atualiza um livro existente no banco")
     @ApiResponse(responseCode = "200", description = "Retorna o livro atualizado no banco.",
             content = @Content(schema = @Schema(implementation = LivroResponseDto.class)))
-    @PutMapping("/{id}")
     ResponseEntity<LivroResponseDto> atualizarUmLivro(
             @Parameter(description = "ID do livro a ser atualizado", example = "42")
             @PathVariable Long id,
@@ -43,7 +41,6 @@ public interface LivroSwaggerI {
     @Operation(summary = "Exclui um livro existente no banco")
     @ApiResponse(responseCode = "204", description = "Livro excluído com sucesso.")
     @ApiResponse(responseCode = "404", description = "Livro não encontrado.")
-    @DeleteMapping("/{id}")
     ResponseEntity<Void> deletar(
             @Parameter(description = "ID do livro", example = "2")
             @PathVariable Long id);
@@ -54,7 +51,6 @@ public interface LivroSwaggerI {
                     mediaType = "application/json",
                     array = @ArraySchema(schema = @Schema(implementation = LivroResponseDto.class))
             ))
-    @GetMapping
     ResponseEntity<Page<LivroResponseDto>> retornarTodosLivrosCadastrados(
             @Parameter(description = "Parâmetros de paginação e ordenação")
             @PageableDefault(size = 10, sort = {"titulo"}) Pageable pageable);
@@ -63,7 +59,6 @@ public interface LivroSwaggerI {
     @ApiResponse(responseCode = "200", description = "Retorna um livro buscado.",
             content = @Content(schema = @Schema(implementation = LivroResponseDto.class)))
     @ApiResponse(responseCode = "404", description = "Livro não encontrado.")
-    @GetMapping("/{id}")
     ResponseEntity<LivroResponseDto> buscarUmLivroPorId(
             @Parameter(description = "ID do livro a ser buscado", example = "42")
             @PathVariable Long id);
@@ -83,7 +78,6 @@ public interface LivroSwaggerI {
                     mediaType = "application/json",
                     array = @ArraySchema(schema = @Schema(implementation = LivroResponseDto.class))
             ))
-    @GetMapping("/categoria/{categoria}")
     ResponseEntity<Page<LivroResponseDto>> retornarLivrosCadastradosPorCategoria(
             @Parameter(description = "Categoria dos livros a serem listados")
             @PathVariable String categoria,
@@ -96,7 +90,6 @@ public interface LivroSwaggerI {
                     mediaType = "application/json",
                     array = @ArraySchema(schema = @Schema(implementation = LivroResponseDto.class))
             ))
-    @GetMapping("/autor/{autor}")
     ResponseEntity<Page<LivroResponseDto>> retornarLivrosCadastradosPorAutor(
             @Parameter(description = "Nome do autor dos livros a serem listados")
             @PathVariable String autor,
