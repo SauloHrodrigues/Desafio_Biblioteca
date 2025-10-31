@@ -56,7 +56,8 @@ public class AutorController implements AutorSwaggerI {
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<AutorResponseDto> atualizarUmAutor(@PathVariable Long id, @Valid @RequestBody AtualizacaoAutorDto atualizacoes) {
-        return null;
+        var autorAtualizado = serviceI.atualizarUmAutor(id,atualizacoes);
+        return ResponseEntity.ok(autorAtualizado);
     }
 
     @Override

@@ -51,7 +51,10 @@ public class AutorServiceImpl implements AutorServiceI {
 
     @Override
     public AutorResponseDto atualizarUmAutor(Long id, AtualizacaoAutorDto atualizacoes) {
-        return null;
+        Autor autor = buscar(id).orElseThrow(()-> new AutorNaoCadastradoException(id));
+        Autor novoAutor = mapper.update(autor,atualizacoes);
+        novoAutor = salvar(novoAutor);
+        return mapper.toResponse(novoAutor);
     }
 
     @Override
@@ -65,6 +68,10 @@ public class AutorServiceImpl implements AutorServiceI {
     }
     protected Optional<Autor> buscar(String nome){
         return repository.findByNomeIgnoreCase(nome);
+    }
+
+    protected Autor salvar(Autor autor){
+        return repository.save(autor);
     }
 
     protected void temLivroAssociados(Autor autor){
