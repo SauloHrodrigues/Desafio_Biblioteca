@@ -36,7 +36,7 @@ public interface AutorSwaggerI {
     @ApiResponse(responseCode = "200", description = "Retorna o autor buscado.",
             content = @Content(schema = @Schema(implementation = AutorResponseDto.class)))
     @ApiResponse(responseCode = "404", description = "Autor não encontrado.")
-    ResponseEntity<AutorResponseDto> buscarUmAnimalPorId(
+    ResponseEntity<AutorResponseDto> buscarUmAutorPorId(
             @Parameter(description = "ID do autor a ser buscado", example = "42")
             @PathVariable Long id);
 

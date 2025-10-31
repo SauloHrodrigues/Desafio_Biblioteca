@@ -1,7 +1,10 @@
 package com.db.projeto.gerenciamento_de_biblioteca.model;
 
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.StatusDoAluguel;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,6 +31,8 @@ public class Aluguel {
     private Long id;
     private LocalDate retirada;
     private LocalDate devolucao;
+    @Enumerated(EnumType.STRING)
+    private StatusDoAluguel status;
 
     @OneToMany(mappedBy = "aluguel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Livro> livros;

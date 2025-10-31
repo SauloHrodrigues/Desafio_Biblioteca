@@ -37,30 +37,32 @@ public class AutorController implements AutorSwaggerI {
     @Override
     @GetMapping
     public ResponseEntity<Page<AutorResponseDto>> retornarTodosAutoresCadastrados(@PageableDefault(size = 10, sort = {"nome"}) Pageable pageable) {
-        return null;
+        var reposta = serviceI.retornarTodosAutoresCadastrados(pageable);
+        return ResponseEntity.ok(reposta);
     }
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<AutorResponseDto> buscarUmAnimalPorId(@PathVariable Long id) {
-        return null;
+    public ResponseEntity<AutorResponseDto> buscarUmAutorPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(serviceI.buscarUmAutorPorId(id));
     }
 
     @Override
-    @GetMapping("/{nome}")
+    @GetMapping("/nome/{nome}")
     public ResponseEntity<AutorResponseDto> buscarAutorPeloNome(@PathVariable String nome) {
-        return null;
+        return ResponseEntity.ok(serviceI.buscarAutorPeloNome(nome));
     }
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<AutorResponseDto> atualizarUmAutor(@PathVariable Long id,@Valid @RequestBody AtualizacaoAutorDto atualizacoes) {
+    public ResponseEntity<AutorResponseDto> atualizarUmAutor(@PathVariable Long id, @Valid @RequestBody AtualizacaoAutorDto atualizacoes) {
         return null;
     }
 
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> apagar(@PathVariable Long id) {
-        return null;
+        serviceI.apagar(id);
+        return ResponseEntity.noContent().build();
     }
 }
