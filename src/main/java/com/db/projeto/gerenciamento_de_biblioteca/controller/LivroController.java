@@ -4,6 +4,8 @@ import com.db.projeto.gerenciamento_de_biblioteca.controller.intefaces_swagger.L
 import com.db.projeto.gerenciamento_de_biblioteca.dto.livro.LivroAtualizacoesDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.livro.LivroResponseDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.livro.NovoLivroDto;
+import com.db.projeto.gerenciamento_de_biblioteca.service.LivroServiceI;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,10 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/livros")
 public class LivroController implements LivroSwaggerI {
 
+    private final LivroServiceI serviceI;
     @Override
     @PostMapping
-    public ResponseEntity<LivroResponseDto> cadastrar(NovoLivroDto dto) {
-        return null;
+    public ResponseEntity<LivroResponseDto> cadastrar(@RequestBody @Valid NovoLivroDto dto) {
+        return ResponseEntity.ok(serviceI.cadastrar(dto));
     }
 
     @Override
@@ -59,7 +62,7 @@ public class LivroController implements LivroSwaggerI {
     }
 
     @Override
-    @GetMapping("/Categoria/{categoria}")
+    @GetMapping("/CategoriaDoLivro/{categoriaDoLivro}")
     public ResponseEntity<Page<LivroResponseDto>> retornarLivrosCadastradosPorCategoria(@PathVariable String categoria, Pageable pageable) {
         return null;
     }

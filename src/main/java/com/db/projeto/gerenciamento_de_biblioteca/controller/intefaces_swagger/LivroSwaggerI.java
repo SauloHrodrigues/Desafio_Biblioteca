@@ -28,7 +28,7 @@ public interface LivroSwaggerI {
     @Operation(summary = "Cadastra um novo livro")
     @ApiResponse(responseCode = "201", description = "Livro cadastrado com sucesso.",
             content = @Content(schema = @Schema(implementation = LivroResponseDto.class)))
-    ResponseEntity<LivroResponseDto> cadastrar(@Valid @RequestBody NovoLivroDto dto);
+    ResponseEntity<LivroResponseDto> cadastrar(NovoLivroDto dto);
 
     @Operation(summary = "Atualiza um livro existente no banco")
     @ApiResponse(responseCode = "200", description = "Retorna o livro atualizado no banco.",
@@ -72,14 +72,14 @@ public interface LivroSwaggerI {
             @Parameter(description = "Título do livro a ser buscado", example = "Senhor dos Anéis")
             @PathVariable String titulo);
 
-    @Operation(summary = "Lista todos os livros de determinada categoria cadastrados no banco")
+    @Operation(summary = "Lista todos os livros de determinada categoriaDoLivro cadastrados no banco")
     @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso.",
             content = @Content(
                     mediaType = "application/json",
                     array = @ArraySchema(schema = @Schema(implementation = LivroResponseDto.class))
             ))
     ResponseEntity<Page<LivroResponseDto>> retornarLivrosCadastradosPorCategoria(
-            @Parameter(description = "Categoria dos livros a serem listados")
+            @Parameter(description = "CategoriaDoLivro dos livros a serem listados")
             @PathVariable String categoria,
             @Parameter(description = "Parâmetros de paginação e ordenação")
             @PageableDefault(size = 10, sort = {"titulo"}) Pageable pageable);

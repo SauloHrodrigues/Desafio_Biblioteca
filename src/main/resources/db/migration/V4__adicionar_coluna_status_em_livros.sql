@@ -1,0 +1,2 @@
+ALTER TABLE livros
+ADD COLUMN status VARCHAR(20);

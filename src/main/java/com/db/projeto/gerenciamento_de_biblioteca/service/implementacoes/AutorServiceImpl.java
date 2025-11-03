@@ -6,6 +6,7 @@ import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.NovoAutorDto;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorComLivroNoBancoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorJaCadastradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorNaoCadastradoException;
+import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.CpfJaCadastradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.mappers.AutorMapper;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Autor;
 import com.db.projeto.gerenciamento_de_biblioteca.repository.AutorRepository;
@@ -22,9 +23,8 @@ public class AutorServiceImpl implements AutorServiceI {
     private AutorMapper mapper = AutorMapper.INSTANCE;
     @Override
     public AutorResponseDto cadastrar(NovoAutorDto dto) {
-        if(buscar(dto.nome()).isPresent()){
-            throw new AutorJaCadastradoException("O autor: "+dto.nome().toUpperCase()+
-                    " já esta cadastrado no banco.");
+        if(repository.findByCpf(dto.cpf()).isPresent()){
+            throw new CpfJaCadastradoException(dto.cpf());
         }
         Autor autor = mapper.toEntity(dto);
         autor= repository.save(autor);

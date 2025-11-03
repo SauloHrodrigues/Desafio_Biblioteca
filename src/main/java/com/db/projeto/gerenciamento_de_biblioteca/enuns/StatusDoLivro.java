@@ -1,12 +1,12 @@
 package com.db.projeto.gerenciamento_de_biblioteca.enuns;
 
-public enum StatusDoAluguel {
+public enum StatusDoLivro {
     ALUGADO("alugado"),
-    DEVOLVIDO("devolvido");
+    DISPONIVEL("disponivel");
 
     private String status;
 
-    StatusDoAluguel(String status) {
+    StatusDoLivro(String status) {
         this.status = status;
     }
 }

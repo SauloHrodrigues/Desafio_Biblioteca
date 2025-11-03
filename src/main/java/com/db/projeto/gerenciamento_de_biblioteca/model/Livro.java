@@ -1,6 +1,10 @@
 package com.db.projeto.gerenciamento_de_biblioteca.model;
 
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.CategoriaDoLivro;
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.StatusDoLivro;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,10 +30,13 @@ public class Livro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nome;
+    private String titulo;
     private LocalDate publicacao;
     private String isbn;
-    private String genero;
+    @Enumerated(EnumType.STRING)
+    private CategoriaDoLivro categoriaDoLivro;
+    @Enumerated(EnumType.STRING)
+    private StatusDoLivro status = StatusDoLivro.DISPONIVEL;
 
     @ManyToMany
     @JoinTable(
