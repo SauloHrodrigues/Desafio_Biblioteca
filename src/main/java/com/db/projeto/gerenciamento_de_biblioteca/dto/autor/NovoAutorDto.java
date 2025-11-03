@@ -1,6 +1,7 @@
 package com.db.projeto.gerenciamento_de_biblioteca.dto.autor;
 
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.GeneroDaPessoa;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,4 +27,9 @@ public record NovoAutorDto(
         @NotNull(message = "A genero da pessoa é campo de preenchimento obrigatório.")
         GeneroDaPessoa generoDaPessoa
 ) {
+        @JsonCreator
+        public NovoAutorDto {
+                if (cpf != null) {
+                        cpf = cpf.replaceAll("\\D", "");                 }
+        }
 }

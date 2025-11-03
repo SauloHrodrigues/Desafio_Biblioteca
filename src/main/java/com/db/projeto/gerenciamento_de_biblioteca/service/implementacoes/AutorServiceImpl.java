@@ -26,6 +26,11 @@ public class AutorServiceImpl implements AutorServiceI {
         if(repository.findByCpf(dto.cpf()).isPresent()){
             throw new CpfJaCadastradoException(dto.cpf());
         }
+
+        if(buscar(dto.nome()).isPresent()){
+            throw new AutorJaCadastradoException("Autor já cadastrado para o nome '{"
+                    +dto.nome()+"'}");
+        }
         Autor autor = mapper.toEntity(dto);
         autor= repository.save(autor);
         return mapper.toResponse(autor);
