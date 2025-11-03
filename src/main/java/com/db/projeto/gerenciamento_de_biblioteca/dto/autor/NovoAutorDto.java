@@ -1,12 +1,29 @@
 package com.db.projeto.gerenciamento_de_biblioteca.dto.autor;
 
-import com.db.projeto.gerenciamento_de_biblioteca.enuns.Sexo;
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.GeneroDaPessoa;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
+import org.hibernate.validator.constraints.br.CPF;
 
+@Schema(description = "Objeto para receber um novo autor.")
 public record NovoAutorDto(
-      String nome,
-      LocalDate dataDeNascimento,
-      String cpf,
-      Sexo sexo
+        @Schema(description = "Nome do autor.", example = "José roberto")
+        @NotBlank(message = "O nome do autor é campo de preenchimento obrigatório.")
+        String nome,
+        @NotNull(message = "A data de nascimento é campo de preenchimento obrigatório.")
+        @PastOrPresent(message = "A data não pode ser no futuro")
+        LocalDate dataDeNascimento,
+
+        @Schema(description = "CPF do autor.", example = "123.456.789-09")
+        @NotBlank(message = "O CPF é campo de preenchimento obrigatório.")
+        @CPF(message = "CPF inválido. Informe um CPF válido.")
+        String cpf,
+
+        @Schema(description = "Genero da pessoa.", example = "marculino ou feminino")
+        @NotNull(message = "A genero da pessoa é campo de preenchimento obrigatório.")
+        GeneroDaPessoa generoDaPessoa
 ) {
 }
