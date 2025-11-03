@@ -10,11 +10,11 @@ import java.time.LocalDate;
 public class AutorFixture {
     static Long id=0L;
 
-    public static NovoAutorDto requestDto(String nome,LocalDate dataDeNascimento, GeneroDaPessoa generoDaPessoa){
+    public static NovoAutorDto requestDto(String nome,LocalDate dataDeNascimento, GeneroDaPessoa generoDaPessoa, String cpf){
         return new NovoAutorDto(
                 nome,
                 dataDeNascimento,
-                "12345678912",
+                cpf,
                 generoDaPessoa);
     }
 

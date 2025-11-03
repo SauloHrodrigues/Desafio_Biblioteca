@@ -6,6 +6,7 @@ import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.NovoAutorDto;
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.GeneroDaPessoa;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorJaCadastradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorNaoCadastradoException;
+import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.CpfJaCadastradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.fixture.AutorFixture;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Autor;
 import com.db.projeto.gerenciamento_de_biblioteca.repository.AutorRepository;
@@ -40,7 +41,7 @@ class AutorServiceImplTest {
     @Test
     @DisplayName("Deve cadastrar um novo autor com sucesso.")
     void cadastrarNovoAutorCoSucesso() {
-        NovoAutorDto dto = AutorFixture.requestDto("Paulo",LocalDate.of(1978, 9, 12), GeneroDaPessoa.MASCULINO);
+        NovoAutorDto dto = AutorFixture.requestDto("Paulo",LocalDate.of(1978, 9, 12), GeneroDaPessoa.MASCULINO,"12345678909");
         Autor autor = AutorFixture.entity(dto);
 
         when(repository.findByNomeIgnoreCase(dto.nome())).thenReturn(Optional.empty());
@@ -57,7 +58,7 @@ class AutorServiceImplTest {
     @Test
     @DisplayName("Deve lançar excecao ao tentar cadastrar um novo autor.")
     void cadastrarNovoAutorComExcecao() {
-        NovoAutorDto dto = AutorFixture.requestDto("Paulo",LocalDate.of(1978, 9, 12), GeneroDaPessoa.MASCULINO);
+        NovoAutorDto dto = AutorFixture.requestDto("Paulo",LocalDate.of(1978, 9, 12), GeneroDaPessoa.MASCULINO,"12345678909");
         Autor autor = AutorFixture.entity(dto);
 
         when(repository.findByNomeIgnoreCase(dto.nome())).thenReturn(Optional.of(autor));
@@ -67,11 +68,30 @@ class AutorServiceImplTest {
                     service.cadastrar(dto);
                 });
 
-        assertTrue(exception.getMessage().contains(
-                "O autor: "+autor.getNome().toUpperCase()+
-                        " já esta cadastrado no banco."
-        ));
+        System.out.println(exception.getMessage());
 
+        assertTrue(exception.getMessage().contains(
+                "Autor já cadastrado para o nome '{"+autor.getNome()+"'}"
+        ));
+    }
+    @Test
+    @DisplayName("Deve lançar excecao ao tentar cadastrar um novo autor, com cpf já cadastrado.")
+    void deveLancarExcecaoPorCpfJaCadastrado() {
+        NovoAutorDto dto = AutorFixture.requestDto("Paulo",LocalDate.of(1978, 9, 12), GeneroDaPessoa.MASCULINO,"12345678909");
+        Autor autor = AutorFixture.entity(dto);
+
+        when(repository.findByCpf(dto.cpf())).thenReturn(Optional.of(autor));
+
+        CpfJaCadastradoException exception = assertThrows(CpfJaCadastradoException.class,
+                ()->{
+                    service.cadastrar(dto);
+                });
+
+        System.out.println(exception.getMessage());
+
+        assertTrue(exception.getMessage().contains(
+                "Já existe um autor registrado para o CPF '"+autor.getCpf()+"'"
+        ));
     }
 
     @Test
