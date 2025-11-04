@@ -1,1 +1,0 @@
-ALTER TABLE livros DROP COLUMN nome;

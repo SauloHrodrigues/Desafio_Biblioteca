@@ -26,11 +26,7 @@ public class AutorServiceImpl implements AutorServiceI {
         if(repository.findByCpf(dto.cpf()).isPresent()){
             throw new CpfJaCadastradoException(dto.cpf());
         }
-
-        if(buscar(dto.nome()).isPresent()){
-            throw new AutorJaCadastradoException("Autor já cadastrado para o nome '{"
-                    +dto.nome()+"'}");
-        }
+        validarNomeLivre(dto.nome());
         Autor autor = mapper.toEntity(dto);
         autor= repository.save(autor);
         return mapper.toResponse(autor);
@@ -57,6 +53,7 @@ public class AutorServiceImpl implements AutorServiceI {
     @Override
     public AutorResponseDto atualizarUmAutor(Long id, AtualizacaoAutorDto atualizacoes) {
         Autor autor = buscar(id).orElseThrow(()-> new AutorNaoCadastradoException(id));
+        validarNomeLivre(atualizacoes.nome());
         Autor novoAutor = mapper.update(autor,atualizacoes);
         novoAutor = salvar(novoAutor);
         return mapper.toResponse(novoAutor);
@@ -66,6 +63,13 @@ public class AutorServiceImpl implements AutorServiceI {
     public void apagar(Long id) {
         Autor autor = buscar(id).orElseThrow(()-> new AutorNaoCadastradoException(id));
         repository.delete(autor);
+    }
+
+    protected void validarNomeLivre(String nome){
+        if(buscar(nome).isPresent()){
+            throw new AutorJaCadastradoException("Autor já cadastrado para o nome '{"
+                    +nome+"'}");
+        }
     }
 
     protected Optional<Autor> buscar(Long id){

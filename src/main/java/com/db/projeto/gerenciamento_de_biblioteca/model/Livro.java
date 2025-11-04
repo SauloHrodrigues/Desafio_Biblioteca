@@ -2,6 +2,8 @@ package com.db.projeto.gerenciamento_de_biblioteca.model;
 
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.CategoriaDoLivro;
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.StatusDoLivro;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -31,6 +33,7 @@ public class Livro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String titulo;
+    @Column(name = "data_publicacao", nullable = false)
     private LocalDate publicacao;
     private String isbn;
     @Enumerated(EnumType.STRING)
@@ -40,10 +43,11 @@ public class Livro {
 
     @ManyToMany
     @JoinTable(
-            name = "livro_autor",
+            name = "autores_livros",
             joinColumns = @JoinColumn(name = "livro_id"),
             inverseJoinColumns = @JoinColumn(name = "autor_id")
     )
+    @JsonIgnore
     private Set<Autor> autores;
 
     @ManyToOne
