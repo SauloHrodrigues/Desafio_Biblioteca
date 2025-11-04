@@ -3,12 +3,16 @@ package com.db.projeto.gerenciamento_de_biblioteca.service.implementacoes;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.AtualizacaoAutorDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.AutorResponseDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.NovoAutorDto;
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.CategoriaDoLivro;
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.GeneroDaPessoa;
+import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorComLivroNoBancoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorJaCadastradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorNaoCadastradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.CpfJaCadastradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.fixture.AutorFixture;
+import com.db.projeto.gerenciamento_de_biblioteca.fixture.LivroFixture;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Autor;
+import com.db.projeto.gerenciamento_de_biblioteca.model.Livro;
 import com.db.projeto.gerenciamento_de_biblioteca.repository.AutorRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -68,8 +72,6 @@ class AutorServiceImplTest {
                     service.cadastrar(dto);
                 });
 
-        System.out.println(exception.getMessage());
-
         assertTrue(exception.getMessage().contains(
                 "Autor já cadastrado para o nome '{"+autor.getNome()+"'}"
         ));
@@ -115,7 +117,7 @@ class AutorServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve retornar um autor buscado poir id.")
+    @DisplayName("Deve retornar um autor buscado por id.")
     void buscarUmAutorPorId() {
         Autor autor = AutorFixture.entity("Jose",LocalDate.of(1978, 9, 12), GeneroDaPessoa.MASCULINO,"12345678934");
         Long id = autor.getId();
@@ -143,7 +145,7 @@ class AutorServiceImplTest {
         );
 
         assertTrue(exception.getMessage().contains(
-                "O id: "+id+" não corresponde a nenhum autor cadastrado no nosso banco de dados."
+                "Não foi localizado nenhum autor para o ID: #{"+id+"}"
         ));
     }
 
@@ -153,15 +155,16 @@ class AutorServiceImplTest {
         Autor autor = AutorFixture.entity("Jose",LocalDate.of(1978, 9, 12), GeneroDaPessoa.MASCULINO,"12345678934");
         String nome = autor.getNome();
 
-        when(repository.findByNomeIgnoreCase(nome)).thenReturn(Optional.of(autor));
+        when(repository.findByNomeContainingIgnoreCase(nome)).thenReturn(List.of(autor));
 
         List<AutorResponseDto> resposta = service.buscarAutorPeloNome(nome);
-//
-//        assertEquals(autor.getId(),resposta.
-//        assertEquals(autor.getNome(),resposta.nome());
-//        assertEquals(autor.getGeneroDaPessoa(),resposta.generoDaPessoa());
-//        assertEquals(autor.getCpf(),resposta.cpf());
-//        assertEquals(autor.getDataDeNascimento(),resposta.dataDeNascimento());
+
+        assertTrue(resposta.size()==1);
+        assertEquals(autor.getId(),resposta.get(0).id());
+        assertEquals(autor.getNome(),resposta.get(0).nome());
+        assertEquals(autor.getGeneroDaPessoa(),resposta.get(0).generoDaPessoa());
+        assertEquals(autor.getCpf(),resposta.get(0).cpf());
+        assertEquals(autor.getDataDeNascimento(),resposta.get(0).dataDeNascimento());
     }
 
     @Test
@@ -169,17 +172,15 @@ class AutorServiceImplTest {
     void lancarExcecaoAoBuscarAutorPeloNome(){
         String nome = "maria";
 
-        when(repository.findByNomeIgnoreCase(nome)).thenReturn(Optional.empty());
+        when(repository.findByNomeContainingIgnoreCase(nome)).thenReturn(List.of());
 
         AutorNaoCadastradoException exception = assertThrows(AutorNaoCadastradoException.class,
                 ()-> {service.buscarAutorPeloNome(nome);}
         );
 
         assertTrue(exception.getMessage().contains(
-                "O nome: "+nome.toUpperCase()+" não corresponde a nenhum autor" +
-                        " cadastrado no nosso banco de dados"
+                "Não foi encontrado nenhum autor com o nome '{"+nome+"}'"
         ));
-
     }
 
     @Test
@@ -215,18 +216,23 @@ class AutorServiceImplTest {
     }
 
     @Test
-    void buscar() {
-    }
+    @DisplayName("Deve lançar excecao ao tentar apagar um autor vinculado a livro existente.")
+    void lancarExcecaoAoApagar() {
+        Autor autor = AutorFixture.entity("Paulo Henrique", LocalDate.of(1978, 9, 12), GeneroDaPessoa.MASCULINO,"12345678934");
+        Long id = autor.getId();
+        Livro livro = LivroFixture.entity("Senhor dos aneis",LocalDate.of(2000,8,10),"1234567-891-234", CategoriaDoLivro.ARTE,autor);
+        autor.getLivros().add(livro);
 
-    @Test
-    void testBuscar() {
-    }
+        when(repository.findById(id)).thenReturn(Optional.of(autor));
 
-    @Test
-    void temLivroAssociados() {
-    }
+        AutorComLivroNoBancoException exception= assertThrows(AutorComLivroNoBancoException.class,
+                ()-> service.apagar(id));
 
-    @Test
-    void buscarPorCpf() {
+      assertTrue(exception.getMessage().contains(
+           "Não foi possível remover o autor de ID \'{ "+id+" }'" +
+                   " pois os livros dos seguintes ID’sestão associados a ele: "+
+                   livro.getId()
+      ));
+
     }
 }

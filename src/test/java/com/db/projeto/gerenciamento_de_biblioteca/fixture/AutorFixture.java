@@ -6,6 +6,7 @@ import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.NovoAutorDto;
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.GeneroDaPessoa;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Autor;
 import java.time.LocalDate;
+import java.util.HashSet;
 
 public class AutorFixture {
     static Long id=0L;
@@ -30,7 +31,7 @@ public class AutorFixture {
                 .dataDeNascimento(dataDeNascimento)
                 .cpf(cpf)
                 .generoDaPessoa(generoDaPessoa)
-                .livros(null)
+                .livros(new HashSet<>())
                 .build();
     }
 
