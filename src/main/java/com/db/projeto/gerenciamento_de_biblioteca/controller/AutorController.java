@@ -6,6 +6,7 @@ import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.AutorResponseDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.NovoAutorDto;
 import com.db.projeto.gerenciamento_de_biblioteca.service.AutorServiceI;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -48,8 +50,8 @@ public class AutorController implements AutorSwaggerI {
     }
 
     @Override
-    @GetMapping("/nome/{nome}")
-    public ResponseEntity<AutorResponseDto> buscarAutorPeloNome(@PathVariable String nome) {
+    @GetMapping("/nome")
+    public ResponseEntity<List<AutorResponseDto>> buscarAutorPeloNome(@RequestParam String nome) {
         return ResponseEntity.ok(serviceI.buscarAutorPeloNome(nome));
     }
 

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -44,7 +45,7 @@ public interface AutorSwaggerI {
     @ApiResponse(responseCode = "200", description = "Retorna o autor buscado.",
             content = @Content(schema = @Schema(implementation = AutorResponseDto.class)))
     @ApiResponse(responseCode = "404", description = "Autor não encontrado.")
-    ResponseEntity<AutorResponseDto> buscarAutorPeloNome(
+    ResponseEntity<List<AutorResponseDto>> buscarAutorPeloNome(
             @Parameter(description = "nome do autor a ser buscado", example = "maria antonieta")
             @PathVariable String nome);
 

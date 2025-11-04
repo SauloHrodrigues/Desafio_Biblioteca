@@ -21,21 +21,21 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
     @ExceptionHandler(AutorJaCadastradoException.class)
     public ResponseEntity<Object> handlerAutorJaCadastrado(AutorJaCadastradoException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("ERRO! " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
     @ExceptionHandler(AutorNaoCadastradoException.class)
     public ResponseEntity<Object> handlerAutorNaoCadastrado(AutorNaoCadastradoException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ERRO! " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
     @ExceptionHandler(AutorComLivroNoBancoException.class)
     public ResponseEntity<Object> handlerAutorComLivroNoBancoException(AutorComLivroNoBancoException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("ERRO! " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body( ex.getMessage());
     }
     @ExceptionHandler(AutorNaoInformadoException.class)
     public ResponseEntity<Object> handlerAutorNaoInformadoException(AutorNaoInformadoException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("ERRO! " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
     @ExceptionHandler(CpfJaCadastradoException.class)

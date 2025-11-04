@@ -4,6 +4,7 @@ import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.AtualizacaoAutorDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.AutorResponseDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.NovoAutorDto;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Autor;
+import java.util.List;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -25,5 +26,6 @@ public interface AutorMapper {
     @Mapping(target = "livros", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Autor update(@MappingTarget Autor autor, AtualizacaoAutorDto atuaalizacao);
-    AutorResponseDto toResponse(Autor autor);
+    AutorResponseDto toResponseDto(Autor autores);
+    List<AutorResponseDto> toResponseDto(List<Autor> autores);
 }
