@@ -13,7 +13,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper()
 public interface LivroMapper {
     LivroMapper INSTANCE = Mappers.getMapper(LivroMapper.class);
 
@@ -24,8 +24,14 @@ public interface LivroMapper {
     Livro toEntity(NovoLivroDto dto, Collection<Autor> autores);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "autores", ignore = true)
+    @Mapping(target = "aluguel", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Livro update(@MappingTarget Livro livro, LivroAtualizacoesDto atuaalizacao);
+
+    @Mapping(target = "idAutores",
+            expression = "java(livro.getAutores() != null ? " +
+                    "livro.getAutores().stream().map(Autor::getId).toList() : null)")
     LivroResponseDto toResponse(Livro livro);
 
 }

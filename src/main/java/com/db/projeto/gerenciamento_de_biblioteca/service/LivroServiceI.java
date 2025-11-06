@@ -9,13 +9,20 @@ import org.springframework.data.domain.Pageable;
 
 public interface LivroServiceI {
     LivroResponseDto cadastrar(NovoLivroDto dto);
-    LivroResponseDto atualizar(LivroAtualizacoesDto dto);
+
+    LivroResponseDto atualizar(Long id, LivroAtualizacoesDto dto);
+
     void apagar(Long id);
+
+    Page<LivroResponseDto> listarTodos(int status, Pageable pageable);
+
     Page<LivroResponseDto> listarTodos(Pageable pageable);
+
     LivroResponseDto buscarPorId(Long id);
-    LivroResponseDto buscarPorTitulo(String titulo);
-    Page<LivroResponseDto> buscarPorCategoria(CategoriaDoLivro categoriaDoLivro);
-    Page<LivroResponseDto> buscarPorAutor(CategoriaDoLivro categoriaDoLivro);
 
+    Page<LivroResponseDto> buscarPorTitulo(String titulo, Pageable pageable);
 
+    Page<LivroResponseDto> buscarPorCategoria(CategoriaDoLivro categoriaDoLivro, Pageable pageable);
+
+    Page<LivroResponseDto> buscarPorAutor(Long idAutor, Pageable pageable);
 }

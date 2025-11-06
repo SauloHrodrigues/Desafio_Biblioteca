@@ -1,12 +1,26 @@
 package com.db.projeto.gerenciamento_de_biblioteca.enuns;
 
 public enum StatusDoLivro {
-    ALUGADO("alugado"),
-    DISPONIVEL("disponivel");
 
-    private String status;
+    DISPONIVEL(0),
+    INDISPONIVEL(1);
 
-    StatusDoLivro(String status) {
-        this.status = status;
+    private final int codigo;
+
+    StatusDoLivro(int codigo) {
+        this.codigo = codigo;
+    }
+
+    public int getCodigo() {
+        return codigo;
+    }
+
+    public static StatusDoLivro fromCodigo(int codigo) {
+        for (StatusDoLivro s : values()) {
+            if (s.getCodigo() == codigo) {
+                return s;
+            }
+        }
+        throw new IllegalArgumentException("Código inválido: " + codigo);
     }
 }

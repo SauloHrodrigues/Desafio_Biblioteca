@@ -6,6 +6,7 @@ import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorJaCadastr
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorNaoCadastradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorNaoInformadoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.CpfJaCadastradoException;
+import com.db.projeto.gerenciamento_de_biblioteca.exception.livro.LivroNaoEncontradoException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -66,6 +68,28 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Requisição inválida. Verifique os dados enviados.");
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<String> tratarErroDeParametroInvalido(MethodArgumentTypeMismatchException ex) {
+        if (ex.getRequiredType() == CategoriaDoLivro.class) {
+            List<String> categoriasValidas = Arrays.stream(CategoriaDoLivro.values())
+                    .map(Enum::name)
+                    .toList();
+
+            String mensagem = "Categoria inválida. As categorias válidas são: " + categoriasValidas;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mensagem);
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Requisição inválida. Verifique os dados enviados.");
+    }
+
+//    ***************** LIVROS *******************************
+
+    @ExceptionHandler(LivroNaoEncontradoException.class)
+    public ResponseEntity<Object> handlerLivroNaoEncontradoException(LivroNaoEncontradoException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body( ex.getMessage());
     }
 
 }

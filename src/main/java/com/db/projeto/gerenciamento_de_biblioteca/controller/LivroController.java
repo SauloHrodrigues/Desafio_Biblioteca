@@ -4,6 +4,7 @@ import com.db.projeto.gerenciamento_de_biblioteca.controller.intefaces_swagger.L
 import com.db.projeto.gerenciamento_de_biblioteca.dto.livro.LivroAtualizacoesDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.livro.LivroResponseDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.livro.NovoLivroDto;
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.CategoriaDoLivro;
 import com.db.projeto.gerenciamento_de_biblioteca.service.LivroServiceI;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -28,48 +30,62 @@ public class LivroController implements LivroSwaggerI {
     @Override
     @PostMapping
     public ResponseEntity<LivroResponseDto> cadastrar(@RequestBody @Valid NovoLivroDto dto) {
-        return ResponseEntity.ok(serviceI.cadastrar(dto));
+        LivroResponseDto responseDto = serviceI.cadastrar(dto);
+        return ResponseEntity.ok(responseDto);
     }
 
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<LivroResponseDto> atualizarUmLivro(@PathVariable Long id,@RequestBody LivroAtualizacoesDto atualizacoes) {
-        return null;
+        var atualizado = serviceI.atualizar(id, atualizacoes);
+        return ResponseEntity.ok(atualizado);
     }
 
     @Override
-    @DeleteMapping("/id")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        return null;
+        serviceI.apagar(id);
+        return ResponseEntity.noContent().build();
     }
 
     @Override
-    @GetMapping
+    @GetMapping("/status")
+    public ResponseEntity<Page<LivroResponseDto>> retornarTodosLivrosCadastrados(@RequestParam int status, Pageable pageable) {
+        var todosOsLivros = serviceI.listarTodos(status,pageable);
+        return ResponseEntity.ok(todosOsLivros);
+    }
+    @Override
+    @GetMapping()
     public ResponseEntity<Page<LivroResponseDto>> retornarTodosLivrosCadastrados(Pageable pageable) {
-        return null;
+        var todosOsLivros = serviceI.listarTodos(pageable);
+        return ResponseEntity.ok(todosOsLivros);
     }
 
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<LivroResponseDto> buscarUmLivroPorId(@PathVariable Long id) {
-        return null;
+        var resposta = serviceI.buscarPorId(id);
+        return ResponseEntity.ok(resposta);
     }
 
     @Override
-    @GetMapping("/titulo/{titulo}")
-    public ResponseEntity<LivroResponseDto> buscarLivroPeloTitulo(@PathVariable String titulo) {
-        return null;
+    @GetMapping("/titulo")
+    public ResponseEntity<Page<LivroResponseDto>> buscarLivroPeloTitulo(@RequestParam String titulo, Pageable pageable) {
+        var resposta = serviceI.buscarPorTitulo(titulo,pageable);
+        return ResponseEntity.ok(resposta);
     }
 
     @Override
-    @GetMapping("/CategoriaDoLivro/{categoriaDoLivro}")
-    public ResponseEntity<Page<LivroResponseDto>> retornarLivrosCadastradosPorCategoria(@PathVariable String categoria, Pageable pageable) {
-        return null;
+    @GetMapping("/categoria")
+    public ResponseEntity<Page<LivroResponseDto>> retornarLivrosCadastradosPorCategoria(@RequestParam CategoriaDoLivro categoria, Pageable pageable) {
+        var resposta = serviceI.buscarPorCategoria(categoria,pageable);
+        return ResponseEntity.ok(resposta);
     }
 
     @Override
-    @GetMapping("/autor/{autor}")
-    public ResponseEntity<Page<LivroResponseDto>> retornarLivrosCadastradosPorAutor(@PathVariable String autor, Pageable pageable) {
-        return null;
+    @GetMapping("/autor/{idAutor}")
+    public ResponseEntity<Page<LivroResponseDto>> retornarLivrosCadastradosPorAutor(@PathVariable Long idAutor, Pageable pageable) {
+        var resposta = serviceI.buscarPorAutor(idAutor,pageable);
+        return ResponseEntity.ok(resposta);
     }
 }

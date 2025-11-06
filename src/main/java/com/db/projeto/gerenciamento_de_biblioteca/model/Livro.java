@@ -38,7 +38,7 @@ public class Livro {
     private String isbn;
     @Enumerated(EnumType.STRING)
     private CategoriaDoLivro categoriaDoLivro;
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private StatusDoLivro status = StatusDoLivro.DISPONIVEL;
 
     @ManyToMany
