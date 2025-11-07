@@ -1,6 +1,6 @@
 package com.db.projeto.gerenciamento_de_biblioteca.model;
 
-import com.db.projeto.gerenciamento_de_biblioteca.enuns.GeneroDaPessoa;
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.sexo;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
 
 @Getter
 @Setter
@@ -29,5 +28,5 @@ public abstract class Pessoa {
     private LocalDate dataDeNascimento;
     private String cpf;
     @Enumerated(EnumType.STRING)
-    private GeneroDaPessoa generoDaPessoa;
+    private sexo sexo;
 }

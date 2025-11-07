@@ -1,12 +1,12 @@
 package com.db.projeto.gerenciamento_de_biblioteca.enuns;
 
-public enum GeneroDaPessoa {
+public enum sexo {
     MASCULINO("masculino"),
     FEMININO("feminino");
 
     private String sexo;
 
-    GeneroDaPessoa(String sexo) {
+    sexo(String sexo) {
         this.sexo = sexo;
     }
 }

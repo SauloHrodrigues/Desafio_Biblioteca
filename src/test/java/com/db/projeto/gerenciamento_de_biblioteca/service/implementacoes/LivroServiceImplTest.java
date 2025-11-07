@@ -4,7 +4,7 @@ import com.db.projeto.gerenciamento_de_biblioteca.dto.livro.LivroAtualizacoesDto
 import com.db.projeto.gerenciamento_de_biblioteca.dto.livro.LivroResponseDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.livro.NovoLivroDto;
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.CategoriaDoLivro;
-import com.db.projeto.gerenciamento_de_biblioteca.enuns.GeneroDaPessoa;
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.sexo;
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.StatusDoLivro;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorNaoCadastradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.fixture.AutorFixture;
@@ -64,9 +64,9 @@ class LivroServiceImplTest {
     @BeforeEach
     void setUp() {
         autorPauloCoelho = AutorFixture.entity("paulo coelho", LocalDate.of(2017,9,12),
-                GeneroDaPessoa.MASCULINO,"76117960034");
+                sexo.MASCULINO,"76117960034");
         autorGustavoCerbasi = AutorFixture.entity("Gustavo Cerbasi", LocalDate.of(2011,9,12),
-                GeneroDaPessoa.MASCULINO,"76117960034");
+                sexo.MASCULINO,"76117960034");
 
         listaDeIds = new ArrayList<>();
         listaDeAutores= new ArrayList<>();

@@ -18,19 +18,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 @RequiredArgsConstructor
 @Service
 public class AutorServiceImpl implements AutorServiceI {
     private final AutorRepository repository;
     private AutorMapper mapper = AutorMapper.INSTANCE;
+
     @Override
     public AutorResponseDto cadastrar(NovoAutorDto dto) {
-        if(repository.findByCpf(dto.cpf()).isPresent()){
+        if (repository.findByCpf(dto.cpf()).isPresent()) {
             throw new CpfJaCadastradoException(dto.cpf());
         }
         validarNomeLivre(dto.nome());
         Autor autor = mapper.toEntity(dto);
-        autor= repository.save(autor);
+        autor = repository.save(autor);
         return mapper.toResponseDto(autor);
     }
 
@@ -50,7 +52,7 @@ public class AutorServiceImpl implements AutorServiceI {
     public List<AutorResponseDto> buscarAutorPeloNome(String nome) {
         List<Autor> autor = repository.findByNomeContainingIgnoreCase(nome);
 
-        if(autor.isEmpty()){
+        if (autor.isEmpty()) {
             throw new AutorNaoCadastradoException(nome);
         }
         return mapper.toResponseDto(autor);
@@ -58,46 +60,47 @@ public class AutorServiceImpl implements AutorServiceI {
 
     @Override
     public AutorResponseDto atualizarUmAutor(Long id, AtualizacaoAutorDto atualizacoes) {
-        Autor autor = buscar(id).orElseThrow(()-> new AutorNaoCadastradoException(id));
+        Autor autor = buscar(id).orElseThrow(() -> new AutorNaoCadastradoException(id));
         validarNomeLivre(atualizacoes.nome());
-        Autor novoAutor = mapper.update(autor,atualizacoes);
+        Autor novoAutor = mapper.update(autor, atualizacoes);
         novoAutor = salvar(novoAutor);
         return mapper.toResponseDto(novoAutor);
     }
 
     @Override
     public void apagar(Long id) {
-        Autor autor = buscar(id).orElseThrow(()-> new AutorNaoCadastradoException(id));
+        Autor autor = buscar(id).orElseThrow(() -> new AutorNaoCadastradoException(id));
         validarAutorSemLivroAssociados(autor);
         repository.delete(autor);
     }
 
-    protected void validarNomeLivre(String nome){
-        if(repository.findByNomeIgnoreCase(nome).isPresent()){
+    protected void validarNomeLivre(String nome) {
+        if (repository.findByNomeIgnoreCase(nome).isPresent()) {
             throw new AutorJaCadastradoException("Autor já cadastrado para o nome '{"
-                    +nome+"'}");
+                    + nome + "'}");
         }
     }
 
-    protected Optional<Autor> buscar(Long id){
+    protected Optional<Autor> buscar(Long id) {
         return repository.findById(id);
     }
-    protected List<Autor> buscar(String nome){
-         return repository.findByNomeContainingIgnoreCase(nome);
+
+    protected List<Autor> buscar(String nome) {
+        return repository.findByNomeContainingIgnoreCase(nome);
     }
 
 
-    protected Autor salvar(Autor autor){
+    protected Autor salvar(Autor autor) {
         return repository.save(autor);
     }
 
-    protected void validarAutorSemLivroAssociados(Autor autor){
-        if(!autor.getLivros().isEmpty()){
-                     String ids = autor.getLivros().stream()
+    protected void validarAutorSemLivroAssociados(Autor autor) {
+        if (!autor.getLivros().isEmpty()) {
+            String ids = autor.getLivros().stream()
                     .map(livro -> String.valueOf(livro.getId()))
                     .collect(Collectors.joining(", "));
-            String mensagem = "Não foi possível remover o autor de ID \'{ "+autor.getId()+" }\' pois os livros dos seguintes ID’s" +
-                    "estão associados a ele: "+ids;
+            String mensagem = "Não foi possível remover o autor de ID \'{ " + autor.getId() + " }\' pois os livros dos seguintes ID’s" +
+                    "estão associados a ele: " + ids;
             throw new AutorComLivroNoBancoException(mensagem);
         }
     }

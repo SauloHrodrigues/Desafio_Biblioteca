@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Tag(name = "Autor", description = "Endpoints para gerenciar clientes")
+@Tag(name = "Autor", description = "Endpoints para gerenciar autor")
 public interface AutorSwaggerI {
 
     @Operation(summary = "Recebe o cadastro de um novo autor.")
@@ -27,14 +27,14 @@ public interface AutorSwaggerI {
     ResponseEntity<AutorResponseDto> cadastrar(NovoAutorDto dto);
 
     @Operation(summary = "Lista todos os autores cadastrados no banco")
-    @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso.",
+    @ApiResponse(responseCode = "200", description = "Lista de autores retornada com sucesso.",
             content = @Content(schema = @Schema(implementation = AutorResponseDto.class)))
     ResponseEntity<Page<AutorResponseDto>> retornarTodosAutoresCadastrados(
             @Parameter(description = "Parâmetros de paginação e ordenação")
             @PageableDefault(size = 10, sort = {"nome"}) Pageable pageable);
 
     @Operation(summary = "Busca um autor pelo ID")
-    @ApiResponse(responseCode = "200", description = "Retorna o autor buscado.",
+    @ApiResponse(responseCode = "200", description = "Retorna, com sucesso, o autor buscado.",
             content = @Content(schema = @Schema(implementation = AutorResponseDto.class)))
     @ApiResponse(responseCode = "404", description = "Autor não encontrado.")
     ResponseEntity<AutorResponseDto> buscarUmAutorPorId(
@@ -62,5 +62,4 @@ public interface AutorSwaggerI {
     @ApiResponse(responseCode = "404", description = "Autor não encontrado.")
     ResponseEntity<Void> apagar(@Parameter(description = "ID do Autor", example = "42")
                                 @PathVariable Long id);
-
 }

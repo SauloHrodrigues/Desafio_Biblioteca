@@ -1,6 +1,6 @@
 package com.db.projeto.gerenciamento_de_biblioteca.dto.autor;
 
-import com.db.projeto.gerenciamento_de_biblioteca.enuns.GeneroDaPessoa;
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.sexo;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -14,6 +14,7 @@ public record NovoAutorDto(
         @Schema(description = "Nome do autor.", example = "José roberto")
         @NotBlank(message = "O nome do autor é campo de preenchimento obrigatório.")
         String nome,
+        @Schema(description = "Data de nascimento do autor.", example = "1974-05-15")
         @NotNull(message = "A data de nascimento é campo de preenchimento obrigatório.")
         @PastOrPresent(message = "A data não pode ser no futuro")
         LocalDate dataDeNascimento,
@@ -23,9 +24,9 @@ public record NovoAutorDto(
         @CPF(message = "CPF inválido. Informe um CPF válido.")
         String cpf,
 
-        @Schema(description = "Genero da pessoa.", example = "marculino ou feminino")
+        @Schema(description = "Genero da pessoa.", example = "MASCULINO / FEMININO")
         @NotNull(message = "A genero da pessoa é campo de preenchimento obrigatório.")
-        GeneroDaPessoa generoDaPessoa
+        sexo sexo
 ) {
         @JsonCreator
         public NovoAutorDto {

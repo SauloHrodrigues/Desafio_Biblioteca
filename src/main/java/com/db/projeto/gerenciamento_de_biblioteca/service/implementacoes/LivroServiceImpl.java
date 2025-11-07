@@ -121,7 +121,7 @@ public class LivroServiceImpl implements LivroServiceI {
     }
 
     protected List<Autor> buscar(List<Long> ids) {
-          return ids.stream()
+        return ids.stream()
                 .map(id -> autorService.buscar(id)
                         .orElseThrow(() -> new AutorNaoCadastradoException(id)))
                 .collect(Collectors.toList());

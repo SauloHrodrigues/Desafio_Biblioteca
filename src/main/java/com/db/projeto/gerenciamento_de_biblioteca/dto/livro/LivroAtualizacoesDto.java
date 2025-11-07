@@ -24,7 +24,4 @@ public record LivroAtualizacoesDto(
 
         @Schema(description = "Categoria do livro.", example = "FICCAO_CIENTIFICA")
         CategoriaDoLivro categoriaDoLivro
-
-//        @Schema(description = "Lista com os IDs dos autores do livro.", example = "[1, 2]")
-//        List<@Positive(message = "O ID do autor deve ser positivo.") Long> idAutores
 ) {}
