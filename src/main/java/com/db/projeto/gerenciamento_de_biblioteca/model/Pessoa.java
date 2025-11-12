@@ -1,6 +1,7 @@
 package com.db.projeto.gerenciamento_de_biblioteca.model;
 
-import com.db.projeto.gerenciamento_de_biblioteca.enuns.sexo;
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.Sexo;
+import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -26,7 +27,9 @@ public abstract class Pessoa {
     private Long id;
     private String nome;
     private LocalDate dataDeNascimento;
+
+    @Column(nullable = false, unique = true)
     private String cpf;
     @Enumerated(EnumType.STRING)
-    private sexo sexo;
+    private Sexo sexo;
 }

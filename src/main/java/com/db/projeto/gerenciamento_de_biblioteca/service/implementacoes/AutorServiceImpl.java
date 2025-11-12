@@ -28,7 +28,7 @@ public class AutorServiceImpl implements AutorServiceI {
     @Override
     public AutorResponseDto cadastrar(NovoAutorDto dto) {
         if (repository.findByCpf(dto.cpf()).isPresent()) {
-            throw new CpfJaCadastradoException(dto.cpf());
+            throw new CpfJaCadastradoException("autor",dto.cpf());
         }
         validarNomeLivre(dto.nome());
         Autor autor = mapper.toEntity(dto);

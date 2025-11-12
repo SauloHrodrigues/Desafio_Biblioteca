@@ -3,7 +3,7 @@ package com.db.projeto.gerenciamento_de_biblioteca.fixture;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.AtualizacaoAutorDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.AutorResponseDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.NovoAutorDto;
-import com.db.projeto.gerenciamento_de_biblioteca.enuns.sexo;
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.Sexo;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Autor;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -11,7 +11,7 @@ import java.util.HashSet;
 public class AutorFixture {
     static Long id=0L;
 
-    public static NovoAutorDto requestDto(String nome, LocalDate dataDeNascimento, sexo sexo, String cpf){
+    public static NovoAutorDto requestDto(String nome, LocalDate dataDeNascimento, Sexo sexo, String cpf){
         return new NovoAutorDto(
                 nome,
                 dataDeNascimento,
@@ -23,7 +23,7 @@ public class AutorFixture {
         return entity(dto.nome(),dto.dataDeNascimento(),dto.sexo(), dto.cpf());
     }
 
-    public static Autor entity(String nome, LocalDate dataDeNascimento, sexo sexo, String cpf){
+    public static Autor entity(String nome, LocalDate dataDeNascimento, Sexo sexo, String cpf){
         id++;
         return Autor.builder()
                 .id(id)
@@ -58,7 +58,7 @@ public class AutorFixture {
         );
     }
 
-    public static AtualizacaoAutorDto atualizacaoDto(String nome, LocalDate dataDeNascimento, sexo sexo){
+    public static AtualizacaoAutorDto atualizacaoDto(String nome, LocalDate dataDeNascimento, Sexo sexo){
         return new AtualizacaoAutorDto(nome,dataDeNascimento, sexo);
     }
 }

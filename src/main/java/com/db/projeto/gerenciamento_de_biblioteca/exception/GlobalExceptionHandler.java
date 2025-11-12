@@ -7,7 +7,10 @@ import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorNaoCadast
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorNaoInformadoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.CpfJaCadastradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.livro.LivroNaoEncontradoException;
+import com.db.projeto.gerenciamento_de_biblioteca.exception.locatario.EmailJaCadastradoException;
+import com.db.projeto.gerenciamento_de_biblioteca.exception.locatario.LocatarioNaoEncontradoException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -31,6 +34,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
+    @ExceptionHandler(LocatarioNaoEncontradoException.class)
+    public ResponseEntity<Object> handlerLocatarioNaoEncontradoException(LocatarioNaoEncontradoException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
     @ExceptionHandler(AutorComLivroNoBancoException.class)
     public ResponseEntity<Object> handlerAutorComLivroNoBancoException(AutorComLivroNoBancoException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body( ex.getMessage());
@@ -45,12 +53,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    @ExceptionHandler(EmailJaCadastradoException.class)
+    public ResponseEntity<String> tratarEmailJaCadastrado(EmailJaCadastradoException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> tratarErroDeValidacao(MethodArgumentNotValidException ex) {
         FieldError erro = ex.getBindingResult().getFieldError();
         String mensagem = erro != null ? erro.getDefaultMessage() : "Erro de validação.";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mensagem);
     }
+
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> tratarErroDeEnum(HttpMessageNotReadableException ex) {
@@ -64,6 +78,14 @@ public class GlobalExceptionHandler {
             String mensagem = "Categoria inválida. As categorias válidas são: " + categoriasValidas;
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mensagem);
+        }
+
+
+        if (ex.getCause() instanceof InvalidFormatException invalidFormatException &&
+                invalidFormatException.getTargetType() == java.time.LocalDate.class) {
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Formato de data incorreto. Favor informar uma data no formato \'yyyy-MM-dd\'.");
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -85,7 +107,9 @@ public class GlobalExceptionHandler {
                 .body("Requisição inválida. Verifique os dados enviados.");
     }
 
-//    ***************** LIVROS *******************************
+
+
+
 
     @ExceptionHandler(LivroNaoEncontradoException.class)
     public ResponseEntity<Object> handlerLivroNaoEncontradoException(LivroNaoEncontradoException ex) {

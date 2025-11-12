@@ -1,6 +1,6 @@
 package com.db.projeto.gerenciamento_de_biblioteca.dto.autor;
 
-import com.db.projeto.gerenciamento_de_biblioteca.enuns.sexo;
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.Sexo;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Livro;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
@@ -16,7 +16,7 @@ public record AutorResponseDto(
         @Schema(description = "CPF do autor.", example = "12345678900")
         String cpf,
         @Schema(description = "Gênero do autor.", example = "MASCULINO")
-        sexo sexo,
+        Sexo sexo,
         @Schema(description = "Lista de livros associados ao autor.")
         Set<Livro> livros
 ) {

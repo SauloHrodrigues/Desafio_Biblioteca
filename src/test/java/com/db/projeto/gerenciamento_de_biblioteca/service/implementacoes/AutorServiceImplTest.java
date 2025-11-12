@@ -4,7 +4,7 @@ import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.AtualizacaoAutorDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.AutorResponseDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.NovoAutorDto;
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.CategoriaDoLivro;
-import com.db.projeto.gerenciamento_de_biblioteca.enuns.sexo;
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.Sexo;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorComLivroNoBancoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorJaCadastradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorNaoCadastradoException;
@@ -45,7 +45,7 @@ class AutorServiceImplTest {
     @Test
     @DisplayName("Deve cadastrar um novo autor com sucesso.")
     void cadastrarNovoAutorCoSucesso() {
-        NovoAutorDto dto = AutorFixture.requestDto("Paulo",LocalDate.of(1978, 9, 12), sexo.MASCULINO,"12345678909");
+        NovoAutorDto dto = AutorFixture.requestDto("Paulo",LocalDate.of(1978, 9, 12), Sexo.MASCULINO,"12345678909");
         Autor autor = AutorFixture.entity(dto);
 
         when(repository.findByNomeIgnoreCase(dto.nome())).thenReturn(Optional.empty());
@@ -62,7 +62,7 @@ class AutorServiceImplTest {
     @Test
     @DisplayName("Deve lançar excecao ao tentar cadastrar um novo autor.")
     void cadastrarNovoAutorComExcecao() {
-        NovoAutorDto dto = AutorFixture.requestDto("Paulo",LocalDate.of(1978, 9, 12), sexo.MASCULINO,"12345678909");
+        NovoAutorDto dto = AutorFixture.requestDto("Paulo",LocalDate.of(1978, 9, 12), Sexo.MASCULINO,"12345678909");
         Autor autor = AutorFixture.entity(dto);
 
         when(repository.findByNomeIgnoreCase(dto.nome())).thenReturn(Optional.of(autor));
@@ -79,7 +79,7 @@ class AutorServiceImplTest {
     @Test
     @DisplayName("Deve lançar excecao ao tentar cadastrar um novo autor, com cpf já cadastrado.")
     void deveLancarExcecaoPorCpfJaCadastrado() {
-        NovoAutorDto dto = AutorFixture.requestDto("Paulo",LocalDate.of(1978, 9, 12), sexo.MASCULINO,"12345678909");
+        NovoAutorDto dto = AutorFixture.requestDto("Paulo",LocalDate.of(1978, 9, 12), Sexo.MASCULINO,"12345678909");
         Autor autor = AutorFixture.entity(dto);
 
         when(repository.findByCpf(dto.cpf())).thenReturn(Optional.of(autor));
@@ -99,8 +99,8 @@ class AutorServiceImplTest {
     @Test
     @DisplayName("Deve retornar lista de autores com sucesso.")
     void retornarTodosAutoresCadastrados() {
-        Autor paulo = AutorFixture.entity("Paulo",LocalDate.of(1978, 9, 12), sexo.MASCULINO,"12345678912");
-        Autor maria = AutorFixture.entity("Maria",LocalDate.of(1978, 9, 12), sexo.FEMININO,"12345678923");
+        Autor paulo = AutorFixture.entity("Paulo",LocalDate.of(1978, 9, 12), Sexo.MASCULINO,"12345678912");
+        Autor maria = AutorFixture.entity("Maria",LocalDate.of(1978, 9, 12), Sexo.FEMININO,"12345678923");
         AutorResponseDto pauloResponse = AutorFixture.responseDto(paulo);
         AutorResponseDto mariaResponse = AutorFixture.responseDto(maria);
         List<Autor> autores = List.of(paulo,maria);
@@ -119,7 +119,7 @@ class AutorServiceImplTest {
     @Test
     @DisplayName("Deve retornar um autor buscado por id.")
     void buscarUmAutorPorId() {
-        Autor autor = AutorFixture.entity("Jose",LocalDate.of(1978, 9, 12), sexo.MASCULINO,"12345678934");
+        Autor autor = AutorFixture.entity("Jose",LocalDate.of(1978, 9, 12), Sexo.MASCULINO,"12345678934");
         Long id = autor.getId();
 
         when(repository.findById(id)).thenReturn(Optional.of(autor));
@@ -152,7 +152,7 @@ class AutorServiceImplTest {
     @Test
     @DisplayName("Deve retornar um autor buscado por nome.")
     void buscarAutorPeloNome() {
-        Autor autor = AutorFixture.entity("Jose",LocalDate.of(1978, 9, 12), sexo.MASCULINO,"12345678934");
+        Autor autor = AutorFixture.entity("Jose",LocalDate.of(1978, 9, 12), Sexo.MASCULINO,"12345678934");
         String nome = autor.getNome();
 
         when(repository.findByNomeContainingIgnoreCase(nome)).thenReturn(List.of(autor));
@@ -186,9 +186,9 @@ class AutorServiceImplTest {
     @Test
     @DisplayName("Deve atualizar um autor existente e retornar o DTO atualizado")
     void atualizarUmAutor() {
-        Autor autor = AutorFixture.entity("Paulo Henrique", LocalDate.of(1978, 9, 12), sexo.MASCULINO,"12345678934");
+        Autor autor = AutorFixture.entity("Paulo Henrique", LocalDate.of(1978, 9, 12), Sexo.MASCULINO,"12345678934");
         Long id = autor.getId();
-        AtualizacaoAutorDto atualizacoes = AutorFixture.atualizacaoDto("Maria",LocalDate.of(2000,12,7), sexo.FEMININO);
+        AtualizacaoAutorDto atualizacoes = AutorFixture.atualizacaoDto("Maria",LocalDate.of(2000,12,7), Sexo.FEMININO);
         Autor autorAtualizado = AutorFixture.update(autor,atualizacoes);
 
         when(repository.findById(id)).thenReturn(Optional.of(autor));
@@ -205,7 +205,7 @@ class AutorServiceImplTest {
     @Test
     @DisplayName("Deve apagar um autor existente.")
     void apagar() {
-        Autor autor = AutorFixture.entity("Paulo Henrique", LocalDate.of(1978, 9, 12), sexo.MASCULINO,"12345678934");
+        Autor autor = AutorFixture.entity("Paulo Henrique", LocalDate.of(1978, 9, 12), Sexo.MASCULINO,"12345678934");
         Long id = autor.getId();
 
         when(repository.findById(id)).thenReturn(Optional.of(autor));
@@ -218,7 +218,7 @@ class AutorServiceImplTest {
     @Test
     @DisplayName("Deve lançar excecao ao tentar apagar um autor vinculado a livro existente.")
     void lancarExcecaoAoApagar() {
-        Autor autor = AutorFixture.entity("Paulo Henrique", LocalDate.of(1978, 9, 12), sexo.MASCULINO,"12345678934");
+        Autor autor = AutorFixture.entity("Paulo Henrique", LocalDate.of(1978, 9, 12), Sexo.MASCULINO,"12345678934");
         Long id = autor.getId();
         Livro livro = LivroFixture.entity("Senhor dos aneis",LocalDate.of(2000,8,10),"1234567-891-234", CategoriaDoLivro.ARTE,autor);
         autor.getLivros().add(livro);

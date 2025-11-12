@@ -1,7 +1,7 @@
 package com.db.projeto.gerenciamento_de_biblioteca.fixture;
 
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.CategoriaDoLivro;
-import com.db.projeto.gerenciamento_de_biblioteca.enuns.sexo;
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.Sexo;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Autor;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Livro;
 import java.time.LocalDate;
@@ -10,9 +10,9 @@ import java.util.List;
 
 public class ListaDeLivrosFixture {
     public static Autor autorPauloCoelho = AutorFixture.entity("paulo coelho", LocalDate.of(2017,9,12),
-    sexo.MASCULINO,"76117960034");
+    Sexo.MASCULINO,"76117960034");
     public static Autor autorGustavoCerbasi = AutorFixture.entity("Gustavo Cerbasi", LocalDate.of(2011,9,12),
-    sexo.MASCULINO,"76117960034");
+    Sexo.MASCULINO,"76117960034");
 
     public static Livro livro01 = LivroFixture.entity("Casais Inteligentes Enriquecem Juntos",
             LocalDate.of(2004, 1, 1),

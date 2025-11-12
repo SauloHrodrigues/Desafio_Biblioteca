@@ -1,6 +1,6 @@
 package com.db.projeto.gerenciamento_de_biblioteca.dto.autor;
 
-import com.db.projeto.gerenciamento_de_biblioteca.enuns.sexo;
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.Sexo;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -26,7 +26,7 @@ public record NovoAutorDto(
 
         @Schema(description = "Genero da pessoa.", example = "MASCULINO / FEMININO")
         @NotNull(message = "A genero da pessoa é campo de preenchimento obrigatório.")
-        sexo sexo
+        Sexo sexo
 ) {
         @JsonCreator
         public NovoAutorDto {

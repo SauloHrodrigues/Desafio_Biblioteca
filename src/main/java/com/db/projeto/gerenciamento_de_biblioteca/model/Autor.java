@@ -3,6 +3,7 @@ package com.db.projeto.gerenciamento_de_biblioteca.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "autores")
+@Table(name = "autores", uniqueConstraints = {
+    @UniqueConstraint(name = "uk_autor_cpf", columnNames = "cpf")})
 public class Autor extends Pessoa {
     @ManyToMany(mappedBy = "autores")
     private Set<Livro> livros= new HashSet<>();

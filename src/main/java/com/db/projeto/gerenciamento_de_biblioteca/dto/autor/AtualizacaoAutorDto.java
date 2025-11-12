@@ -1,6 +1,6 @@
 package com.db.projeto.gerenciamento_de_biblioteca.dto.autor;
 
-import com.db.projeto.gerenciamento_de_biblioteca.enuns.sexo;
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.Sexo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
@@ -13,6 +13,6 @@ public record AtualizacaoAutorDto(
         @PastOrPresent(message = "A data não pode ser no futuro")
         LocalDate dataDeNascimento,
         @Schema(description = "Genero da pessoa.", example = "MASCULINO / FEMININO")
-        sexo sexo
+        Sexo sexo
 ) {
 }
