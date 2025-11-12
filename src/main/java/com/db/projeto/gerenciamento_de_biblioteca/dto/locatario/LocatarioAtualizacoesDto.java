@@ -10,8 +10,6 @@ import java.time.LocalDate;
 
 @Schema(description = "Objeto para atualizar um locatário.")
 public record LocatarioAtualizacoesDto(
-        @Schema(description = "ID único do locatario no banco", example = "42")
-        Long id,
         @Schema(description = "Nome do locatario.", example = "José roberto")
         String nome,
 

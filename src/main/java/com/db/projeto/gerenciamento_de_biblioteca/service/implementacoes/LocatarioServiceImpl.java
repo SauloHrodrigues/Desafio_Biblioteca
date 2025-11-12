@@ -37,6 +37,7 @@ public class LocatarioServiceImpl implements LocatarioServiceI {
         return resposta;
     }
 
+    @Override
     public LocatarioResponseDto buscarPorId(Long id){
         Locatario locatario = buscar(id);
         return mapper.toResponseDto(locatario);
@@ -45,13 +46,13 @@ public class LocatarioServiceImpl implements LocatarioServiceI {
     @Override
     public LocatarioResponseDto atualizar(Long id, LocatarioAtualizacoesDto dto){
         Locatario locatario = buscar(id);
-        if(dto.email()!= null && dto.email()!= locatario.getEmail()){
+        if(dto.email()!= null || dto.email()!= locatario.getEmail()){
             validarEmail(dto.email());
         }
 
         locatario = mapper.update(locatario, dto);
-        locatario = salvar(locatario);
-        return mapper.toResponseDto(locatario);
+        Locatario novo = salvar(locatario);
+        return mapper.toResponseDto(novo);
     }
 
     @Override

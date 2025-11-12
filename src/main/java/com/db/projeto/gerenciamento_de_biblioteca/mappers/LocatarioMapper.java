@@ -22,9 +22,10 @@ public interface LocatarioMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "cpf", ignore = true)
-    @Mapping(target = "alugueis", ignore = true)
+//    @Mapping(target = "alugueis", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Locatario update(@MappingTarget Locatario locatario, LocatarioAtualizacoesDto atualizacao);
+
     LocatarioResponseDto toResponseDto(Locatario locatario);
     List<LocatarioResponseDto> toResponseDto(List<Locatario> autores);
 }
