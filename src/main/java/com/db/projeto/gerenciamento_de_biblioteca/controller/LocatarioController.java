@@ -48,14 +48,16 @@ public class LocatarioController implements LocatarioSwaggerI {
 
     @Override
     @GetMapping
-    public ResponseEntity<Page<LivroResponseDto>> retornarTodosLocatariosCadastrados(Pageable pageable) {
-        return null;
+    public ResponseEntity<Page<LocatarioResponseDto>> retornarTodosLocatariosCadastrados(Pageable pageable) {
+       var resposta = serviceI.listarTodos(pageable);
+        return ResponseEntity.ok(resposta);
     }
 
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<LocatarioResponseDto> buscarUmLocatarioPorId(@PathVariable Long id) {
-        return null;
+        var resposta = serviceI.buscarPorId(id);
+        return ResponseEntity.ok(resposta);
     }
 
     @Override

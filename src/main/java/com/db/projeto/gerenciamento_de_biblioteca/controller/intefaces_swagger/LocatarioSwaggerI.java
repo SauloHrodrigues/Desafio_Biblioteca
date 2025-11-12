@@ -51,7 +51,7 @@ public interface LocatarioSwaggerI {
                     mediaType = "application/json",
                     array = @ArraySchema(schema = @Schema(implementation = LocatarioResponseDto.class))
             ))
-    ResponseEntity<Page<LivroResponseDto>> retornarTodosLocatariosCadastrados(
+    ResponseEntity<Page<LocatarioResponseDto>> retornarTodosLocatariosCadastrados(
             @Parameter(description = "Parâmetros de paginação e ordenação")
             @PageableDefault(size = 10, sort = {"nome"}) Pageable pageable);
 

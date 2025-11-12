@@ -12,6 +12,8 @@ import com.db.projeto.gerenciamento_de_biblioteca.repository.LocatarioRepository
 import com.db.projeto.gerenciamento_de_biblioteca.service.LocatarioServiceI;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,6 +32,17 @@ public class LocatarioServiceImpl implements LocatarioServiceI {
     }
 
     @Override
+    public Page<LocatarioResponseDto> listarTodos(Pageable pageable){
+        Page<LocatarioResponseDto> resposta = repository.findAll(pageable).map(mapper::toResponseDto);
+        return resposta;
+    }
+
+    public LocatarioResponseDto buscarPorId(Long id){
+        Locatario locatario = buscar(id);
+        return mapper.toResponseDto(locatario);
+    }
+
+    @Override
     public LocatarioResponseDto atualizar(Long id, LocatarioAtualizacoesDto dto){
         Locatario locatario = buscar(id);
         if(dto.email()!= null && dto.email()!= locatario.getEmail()){
@@ -39,6 +52,11 @@ public class LocatarioServiceImpl implements LocatarioServiceI {
         locatario = mapper.update(locatario, dto);
         locatario = salvar(locatario);
         return mapper.toResponseDto(locatario);
+    }
+
+    @Override
+    public void apagar(Long id){
+//        TODO
     }
 
     protected void validarCpf(String cpf){
