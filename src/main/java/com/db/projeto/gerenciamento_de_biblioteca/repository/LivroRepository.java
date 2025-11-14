@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LivroRepository extends JpaRepository<Livro,Long> {
 
+
     Page<Livro> findByTituloContainingIgnoreCase(String titulo, Pageable pageable);
     Page<Livro> findByCategoriaDoLivro(CategoriaDoLivro categoriaDoLivro, Pageable pageable);
     Page<Livro> findByStatus(StatusDoLivro status, Pageable pageable);

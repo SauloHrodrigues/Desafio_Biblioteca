@@ -25,7 +25,7 @@ public record NovoAutorDto(
         String cpf,
 
         @Schema(description = "Genero da pessoa.", example = "MASCULINO / FEMININO")
-        @NotNull(message = "A genero da pessoa é campo de preenchimento obrigatório.")
+        @NotNull(message = "A sexo da pessoa é campo de preenchimento obrigatório.")
         Sexo sexo
 ) {
         @JsonCreator

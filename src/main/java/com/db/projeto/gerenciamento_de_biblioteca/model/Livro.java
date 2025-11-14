@@ -3,6 +3,7 @@ package com.db.projeto.gerenciamento_de_biblioteca.model;
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.CategoriaDoLivro;
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.StatusDoLivro;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -41,7 +42,7 @@ public class Livro {
     @Enumerated(EnumType.ORDINAL)
     private StatusDoLivro status = StatusDoLivro.DISPONIVEL;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "autores_livros",
             joinColumns = @JoinColumn(name = "livro_id"),
@@ -52,5 +53,6 @@ public class Livro {
 
     @ManyToOne
     @JoinColumn(name = "aluguel_id")
+    @JsonIgnore
     private Aluguel aluguel;
 }

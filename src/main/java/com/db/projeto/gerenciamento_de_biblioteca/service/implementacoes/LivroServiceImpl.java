@@ -13,6 +13,7 @@ import com.db.projeto.gerenciamento_de_biblioteca.model.Livro;
 import com.db.projeto.gerenciamento_de_biblioteca.repository.LivroRepository;
 import com.db.projeto.gerenciamento_de_biblioteca.service.LivroServiceI;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,7 +30,7 @@ public class LivroServiceImpl implements LivroServiceI {
 
     @Override
     public LivroResponseDto cadastrar(NovoLivroDto dto) {
-        List<Autor> autores = buscar(dto.idAutores());
+        Set<Autor> autores = buscar(dto.idAutores());
         Livro livro = mapper.toEntity(dto, autores);
         livro = repository.save(livro);
         return mapper.toResponse(livro);
@@ -117,13 +118,13 @@ public class LivroServiceImpl implements LivroServiceI {
 
     protected Livro buscar(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new AutorNaoCadastradoException(id));
+                .orElseThrow(() -> new LivroNaoEncontradoException(id));
     }
 
-    protected List<Autor> buscar(List<Long> ids) {
+    protected Set<Autor> buscar(List<Long> ids) {
         return ids.stream()
                 .map(id -> autorService.buscar(id)
                         .orElseThrow(() -> new AutorNaoCadastradoException(id)))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 }

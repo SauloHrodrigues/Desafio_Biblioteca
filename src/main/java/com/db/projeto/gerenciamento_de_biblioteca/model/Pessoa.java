@@ -33,16 +33,4 @@ public abstract class Pessoa {
     private String cpf;
     @Enumerated(EnumType.STRING)
     private Sexo sexo;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Pessoa pessoa)) return false;
-        return Objects.equals(getId(), pessoa.getId()) && Objects.equals(getNome(), pessoa.getNome()) && Objects.equals(getDataDeNascimento(), pessoa.getDataDeNascimento()) && Objects.equals(getCpf(), pessoa.getCpf()) && getSexo() == pessoa.getSexo();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getNome(), getDataDeNascimento(), getCpf(), getSexo());
-    }
 }

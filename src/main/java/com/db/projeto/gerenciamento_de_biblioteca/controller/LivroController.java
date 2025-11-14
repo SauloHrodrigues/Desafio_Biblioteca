@@ -24,65 +24,65 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/livros")
-public class LivroController implements LivroSwaggerI {
+public class LivroController  { //implements LivroSwaggerI
 
     private final LivroServiceI serviceI;
-    @Override
+//    @Override
     @PostMapping
     public ResponseEntity<LivroResponseDto> cadastrar(@RequestBody @Valid NovoLivroDto dto) {
         LivroResponseDto responseDto = serviceI.cadastrar(dto);
         return ResponseEntity.ok(responseDto);
     }
 
-    @Override
+//    @Override
     @PutMapping("/{id}")
     public ResponseEntity<LivroResponseDto> atualizarUmLivro(@PathVariable Long id,@RequestBody LivroAtualizacoesDto atualizacoes) {
         var atualizado = serviceI.atualizar(id, atualizacoes);
         return ResponseEntity.ok(atualizado);
     }
 
-    @Override
+//    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         serviceI.apagar(id);
         return ResponseEntity.noContent().build();
     }
 
-    @Override
+//    @Override
     @GetMapping("/status")
     public ResponseEntity<Page<LivroResponseDto>> retornarTodosLivrosCadastrados(@RequestParam int status, Pageable pageable) {
         var todosOsLivros = serviceI.listarTodos(status,pageable);
         return ResponseEntity.ok(todosOsLivros);
     }
-    @Override
+//    @Override
     @GetMapping()
     public ResponseEntity<Page<LivroResponseDto>> retornarTodosLivrosCadastrados(Pageable pageable) {
         var todosOsLivros = serviceI.listarTodos(pageable);
         return ResponseEntity.ok(todosOsLivros);
     }
 
-    @Override
+//    @Override
     @GetMapping("/{id}")
     public ResponseEntity<LivroResponseDto> buscarUmLivroPorId(@PathVariable Long id) {
         var resposta = serviceI.buscarPorId(id);
         return ResponseEntity.ok(resposta);
     }
 
-    @Override
+//    @Override
     @GetMapping("/titulo")
     public ResponseEntity<Page<LivroResponseDto>> buscarLivroPeloTitulo(@RequestParam String titulo, Pageable pageable) {
         var resposta = serviceI.buscarPorTitulo(titulo,pageable);
         return ResponseEntity.ok(resposta);
     }
 
-    @Override
+//    @Override
     @GetMapping("/categoria")
     public ResponseEntity<Page<LivroResponseDto>> retornarLivrosCadastradosPorCategoria(@RequestParam CategoriaDoLivro categoria, Pageable pageable) {
         var resposta = serviceI.buscarPorCategoria(categoria,pageable);
         return ResponseEntity.ok(resposta);
     }
 
-    @Override
+//    @Override
     @GetMapping("/autor/{idAutor}")
     public ResponseEntity<Page<LivroResponseDto>> retornarLivrosCadastradosPorAutor(@PathVariable Long idAutor, Pageable pageable) {
         var resposta = serviceI.buscarPorAutor(idAutor,pageable);

@@ -1,11 +1,13 @@
 package com.db.projeto.gerenciamento_de_biblioteca.exception;
 
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.CategoriaDoLivro;
+import com.db.projeto.gerenciamento_de_biblioteca.exception.aluguel.AluguelNaoEncontradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorComLivroNoBancoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorJaCadastradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorNaoCadastradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorNaoInformadoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.CpfJaCadastradoException;
+import com.db.projeto.gerenciamento_de_biblioteca.exception.livro.LivroIndisponivelException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.livro.LivroNaoEncontradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.locatario.EmailJaCadastradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.locatario.LocatarioNaoEncontradoException;
@@ -45,6 +47,10 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(AutorNaoInformadoException.class)
     public ResponseEntity<Object> handlerAutorNaoInformadoException(AutorNaoInformadoException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+    @ExceptionHandler(LivroIndisponivelException.class)
+    public ResponseEntity<Object> handlerLivroIndisponivelException(LivroIndisponivelException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
@@ -107,13 +113,14 @@ public class GlobalExceptionHandler {
                 .body("Requisição inválida. Verifique os dados enviados.");
     }
 
-
-
-
-
     @ExceptionHandler(LivroNaoEncontradoException.class)
     public ResponseEntity<Object> handlerLivroNaoEncontradoException(LivroNaoEncontradoException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body( ex.getMessage());
+    }
+
+    @ExceptionHandler(AluguelNaoEncontradoException.class)
+    public ResponseEntity<Object> handlerAluguelNaoEncontradoException(AluguelNaoEncontradoException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
 }

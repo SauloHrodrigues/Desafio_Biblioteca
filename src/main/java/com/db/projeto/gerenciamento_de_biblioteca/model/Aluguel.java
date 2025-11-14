@@ -31,6 +31,7 @@ public class Aluguel {
     private Long id;
     private LocalDate retirada;
     private LocalDate devolucao;
+    private boolean devolvido;
     @Enumerated(EnumType.STRING)
     private StatusDoLivro status;
 

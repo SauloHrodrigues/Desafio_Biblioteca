@@ -65,7 +65,7 @@ public interface LocatarioSwaggerI {
             @PathVariable Long id);
 
 
-    @Operation(summary = "Lista todos os livros de determinado autor cadastrados no banco")
+    @Operation(summary = "Lista todos os locatarios cadastrados no banco")
     @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso.",
             content = @Content(
                     mediaType = "application/json",
