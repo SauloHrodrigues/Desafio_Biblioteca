@@ -121,10 +121,14 @@ class AluguelServiceImplTest {
     @Test
     @DisplayName("Deve lançar exceção de livro indisponivel ao cadastrar um  aluguel.")
     void deveLancarExcecaoDeLivroIndisponivelAoCadastrarUmAluguel() {
+
+        Livro livro01 = ListaDeLivrosFixture.livro05;
+        Livro livro02 = ListaDeLivrosFixture.livro06;
+        livro02.setStatus(StatusDoLivro.INDISPONIVEL);
+        AluguelFixiture.livros = List.of(livro01,livro02);
+        AluguelFixiture.idsDosLivros = List.of(livro01.getId(),livro02.getId());
         NovoAluguelDto dto = AluguelFixiture.requestDto();
-        Livro livro = ListaDeLivrosFixture.livro02;
-        livro.setStatus(StatusDoLivro.INDISPONIVEL);
-        List<Livro> livros = List.of(livro01,livro);
+        List<Livro> livros = AluguelFixiture.livros;
 
         when(livroService.buscarListaDeLivros(dto.idsDosLivros())).thenReturn(livros);
 
@@ -132,7 +136,7 @@ class AluguelServiceImplTest {
             service.cadastrar(dto);
         });
 
-        assertEquals("O livro para o ID: #{"+livro.getId()+"}, está indisponível.",
+        assertEquals("O livro para o ID: #{"+livro02.getId()+"}, está indisponível.",
                 resposta.getMessage());
     }
 
@@ -317,9 +321,9 @@ class AluguelServiceImplTest {
     @Test
     @DisplayName("Deve lançar exceção de livro indisponivel.")
     void deveLancarExcecaoDeLivroIndisponivelAoValidaLivros() {
-        Livro livro01 = ListaDeLivrosFixture.livro01;
-        Livro livro02 = ListaDeLivrosFixture.livro02;
-        Livro livro03 = ListaDeLivrosFixture.livro03;
+        Livro livro01 = ListaDeLivrosFixture.livro07;
+        Livro livro02 = ListaDeLivrosFixture.livro08;
+        Livro livro03 = ListaDeLivrosFixture.livro09;
         livro03.setStatus(StatusDoLivro.INDISPONIVEL);
         List<Livro> livros = List.of(livro01,livro02,livro03);
         List<Long> ids = List.of(livro01.getId(),livro02.getId(),livro03.getId());
