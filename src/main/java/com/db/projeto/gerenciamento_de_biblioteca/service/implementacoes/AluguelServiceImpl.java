@@ -4,14 +4,17 @@ import com.db.projeto.gerenciamento_de_biblioteca.dto.aluguel.AluguelResponseDto
 import com.db.projeto.gerenciamento_de_biblioteca.dto.aluguel.NovoAluguel;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.aluguel.NovoAluguelDto;
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.StatusDoLivro;
+import com.db.projeto.gerenciamento_de_biblioteca.exception.aluguel.AluguelDevolvidoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.aluguel.AluguelNaoEncontradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.livro.LivroIndisponivelException;
+import com.db.projeto.gerenciamento_de_biblioteca.exception.livro.LivroNaoEncontradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.mappers.AluguelMapper;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Aluguel;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Livro;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Locatario;
 import com.db.projeto.gerenciamento_de_biblioteca.repository.AluguelRepository;
 import com.db.projeto.gerenciamento_de_biblioteca.service.AluguelServiceI;
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -32,121 +35,102 @@ public class AluguelServiceImpl implements AluguelServiceI {
 
     @Override
     public AluguelResponseDto cadastrar(NovoAluguelDto dto) {
-        NovoAluguel novoAluguel= criarAluguel(dto);
-        Aluguel aluguel = mapper.toEntity(novoAluguel);
-        aluguel = salvarAluguel(aluguel);
+        List<Livro> livros = validaLivros(dto.idsDosLivros());
+        Locatario locatario = locatarioService.buscar(dto.idDoLocatario());
+        Aluguel aluguel = mapper.toEntity(dto);
+
+        aluguel.setLocatario(locatario);
+        aluguel.setLivros(livros);
+        aluguel = repository.save(aluguel);
         vincularLivrosAoAluguel(aluguel);
+
         return mapper.toResponse(aluguel);
     }
 
     @Override
-    public Page<AluguelResponseDto> listarTodos(Pageable pageable){
+    public Page<AluguelResponseDto> listarTodos(Pageable pageable) {
         Page<AluguelResponseDto> resposta = repository.findAll(pageable).map(mapper::toResponse);
         return resposta;
     }
 
     @Override
-    public AluguelResponseDto buscarPorId(Long id){
+    public AluguelResponseDto buscarPorId(Long id) {
         Aluguel aluguel = buscar(id);
         return mapper.toResponse(aluguel);
     }
 
-
     @Override
-    public Page<AluguelResponseDto> listarAlugueis(String status,Pageable pageable){
-        Page<AluguelResponseDto> resposta=null;
+    public Page<AluguelResponseDto> listarAlugueis(String status, Pageable pageable) {
+        Page<AluguelResponseDto> resposta = null;
 
-        if(status.equalsIgnoreCase("pendentes")){
-             resposta = repository.findByDevolvidoFalse(pageable).map(mapper::toResponse);
+        if (status.equalsIgnoreCase("pendentes")) {
+            resposta = repository.findByDevolvidoFalse(pageable).map(mapper::toResponse);
         }
 
-        if(status.equalsIgnoreCase("devolvidos")){
-             resposta = repository.findByDevolvidoTrue(pageable).map(mapper::toResponse);
+        if (status.equalsIgnoreCase("devolvidos")) {
+            resposta = repository.findByDevolvidoTrue(pageable).map(mapper::toResponse);
         }
 
-       if(resposta.isEmpty()){
-           throw new AluguelNaoEncontradoException("Não há alugueis "+status+".");
-       }
+        if (resposta.isEmpty()) {
+            throw new AluguelNaoEncontradoException("Não há alugueis " + status + ".");
+        }
         return resposta;
     }
 
-
-    protected Aluguel buscar(Long id){
-        return repository.findById(id).orElseThrow(()-> new AluguelNaoEncontradoException(id));
-    }
-
+    @Transactional
     @Override
-    public AluguelResponseDto devolverAluguel(Long id){
+    public AluguelResponseDto devolverAluguel(Long id) {
+
         Aluguel aluguel = buscar(id);
-        devolverLivros(aluguel.getLivros());
+
+        if (aluguel.isDevolvido()) {
+            throw new AluguelDevolvidoException(id);
+        }
+
+        for (Livro livro : aluguel.getLivros()) {
+            livro.setStatus(StatusDoLivro.DISPONIVEL);
+        }
+
         aluguel.setDevolvido(true);
-        aluguel= salvarAluguel(aluguel);
+        aluguel = repository.save(aluguel);
         return mapper.toResponse(aluguel);
     }
 
-    protected void devolverLivros(List<Livro>livros){
-        for(Livro livro: livros){
-            livro.setStatus(StatusDoLivro.DISPONIVEL);
-            salvarLivro(livro);
-        }
-    }
-    protected NovoAluguel criarAluguel(NovoAluguelDto dto){
-        Locatario locatario = getLocatario(dto.idDoLocatario());
-        Set<Livro> livros = validaLivros(dto.idsDosLivros());
-        LocalDate retirada = getDataDaRetirada(dto.retirada());
-        LocalDate devolucao = getDataDaDevolucao(dto.devolucao());
 
-        NovoAluguel aluguel= NovoAluguel.builder()
-                .retirada(retirada)
-                .devolucao(devolucao)
-                .devolvido(false)
-                .livros(livros)
-                .locatario(locatario)
-                .build();
-        return aluguel;
+    protected Aluguel buscar(Long id) {
+        return repository.findById(id).orElseThrow(() -> new AluguelNaoEncontradoException(id));
     }
-    protected void vincularLivrosAoAluguel(Aluguel aluguel){
-        for (Livro livro: aluguel.getLivros()) {
+
+    protected void vincularLivrosAoAluguel(Aluguel aluguel) {
+        for (Livro livro : aluguel.getLivros()) {
             livro.setStatus(StatusDoLivro.INDISPONIVEL);
             livro.setAluguel(aluguel);
             salvarLivro(livro);
         }
     }
-    protected Aluguel salvarAluguel(Aluguel aluguel){
-        return repository.save(aluguel);
-    }
-    protected LocalDate getDataDaRetirada(LocalDate retirada){
 
-        if(retirada == null){
-            return LocalDate.now();
-        }else {
-            return retirada;
-        }
-    }
-    protected LocalDate getDataDaDevolucao(LocalDate devolucao){
-        if(devolucao == null){
-            return LocalDate.now().plusDays(2);
-        }else {
-            return devolucao;
-        }
-    }
-    protected Locatario getLocatario(Long idLocatario){
-        return locatarioService.buscar(idLocatario);
-    }
-    protected Set<Livro> validaLivros(List<Long> ids){
-        Set<Livro> livros = new HashSet<>();
+    protected List<Livro> validaLivros(List<Long> ids) {
+        List<Livro> livros = livroService.buscarListaDeLivros(ids);
 
-        for(Long id:ids){
-            Livro livro = livroService.buscar(id);
-            if(livro.getStatus().equals(StatusDoLivro.DISPONIVEL)){
-                livros.add(livro);
-            } else {
-                throw new LivroIndisponivelException(id);
+        for (Long id : ids) {
+            boolean existe = livros.stream()
+                    .anyMatch(livro -> livro.getId().equals(id));
+
+            if (!existe) {
+                throw new LivroNaoEncontradoException(id);
             }
         }
+
+        for (Livro livro : livros) {
+            if (livro.getStatus().equals(StatusDoLivro.INDISPONIVEL)) {
+                throw new LivroIndisponivelException(livro.getId());
+            }
+        }
+
         return livros;
     }
-    protected Livro salvarLivro(Livro livro){
+
+    protected Livro salvarLivro(Livro livro) {
         return livroService.salvar(livro);
     }
 

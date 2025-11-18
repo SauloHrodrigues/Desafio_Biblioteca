@@ -34,8 +34,4 @@ public class Autor extends Pessoa {
         return Objects.equals(getId(), autor.getId());
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId());
-    }
 }

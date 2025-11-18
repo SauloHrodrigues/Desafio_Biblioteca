@@ -6,7 +6,7 @@ import java.util.List;
 public record NovoAluguelDto(
         LocalDate retirada,
         LocalDate devolucao,
-        boolean devolvido,
+        LocalDate localDate,
         Long idDoLocatario,
         List<Long> idsDosLivros
 ) {

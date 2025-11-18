@@ -84,7 +84,7 @@ class LivroServiceImplTest {
         Livro livro = LivroFixture.entity(dto, autorGustavoCerbasi);
 
         when(autorService.buscar(idAutor)).thenReturn(Optional.of(autorGustavoCerbasi));
-        when(repository.save(any(Livro.class))).thenReturn(livro);
+        when(repository.save(livro)).thenReturn(livro);
 
         LivroResponseDto resposta = service.cadastrar(dto);
 

@@ -12,6 +12,7 @@ import com.db.projeto.gerenciamento_de_biblioteca.model.Autor;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Livro;
 import com.db.projeto.gerenciamento_de_biblioteca.repository.LivroRepository;
 import com.db.projeto.gerenciamento_de_biblioteca.service.LivroServiceI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -119,6 +120,11 @@ public class LivroServiceImpl implements LivroServiceI {
     protected Livro buscar(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new LivroNaoEncontradoException(id));
+    }
+
+    protected List<Livro> buscarListaDeLivros(List<Long> ids){
+        List<Livro> livros = repository.findAllById(ids);
+       return livros;
     }
 
     protected Set<Autor> buscar(List<Long> ids) {

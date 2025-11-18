@@ -2,6 +2,7 @@ package com.db.projeto.gerenciamento_de_biblioteca.fixture;
 
 import com.db.projeto.gerenciamento_de_biblioteca.dto.livro.NovoLivroDto;
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.CategoriaDoLivro;
+import com.db.projeto.gerenciamento_de_biblioteca.enuns.StatusDoLivro;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Autor;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Livro;
 import java.time.LocalDate;
@@ -36,6 +37,7 @@ public class LivroFixture {
                 .titulo(titulo)
                 .publicacao(publicacao)
                 .isbn(isbn)
+                .status(StatusDoLivro.DISPONIVEL)
                 .categoriaDoLivro(categoriaDoLivro)
                 .autores(autores)
                 .build();

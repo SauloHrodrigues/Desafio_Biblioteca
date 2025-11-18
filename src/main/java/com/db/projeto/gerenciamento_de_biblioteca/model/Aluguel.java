@@ -32,8 +32,6 @@ public class Aluguel {
     private LocalDate retirada;
     private LocalDate devolucao;
     private boolean devolvido;
-    @Enumerated(EnumType.STRING)
-    private StatusDoLivro status;
 
     @OneToMany(mappedBy = "aluguel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Livro> livros;
