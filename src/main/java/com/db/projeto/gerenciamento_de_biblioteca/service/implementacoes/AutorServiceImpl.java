@@ -9,6 +9,7 @@ import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorNaoCadast
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.CpfJaCadastradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.mappers.AutorMapper;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Autor;
+import com.db.projeto.gerenciamento_de_biblioteca.model.Livro;
 import com.db.projeto.gerenciamento_de_biblioteca.repository.AutorRepository;
 import com.db.projeto.gerenciamento_de_biblioteca.service.AutorServiceI;
 import java.util.List;
@@ -95,13 +96,16 @@ public class AutorServiceImpl implements AutorServiceI {
     }
 
     protected void validarAutorSemLivroAssociados(Autor autor) {
-        if (!autor.getLivros().isEmpty()) {
-            String ids = autor.getLivros().stream()
-                    .map(livro -> String.valueOf(livro.getId()))
-                    .collect(Collectors.joining(", "));
-            String mensagem = "Não foi possível remover o autor de ID \'{ " + autor.getId() + " }\' pois os livros dos seguintes ID’s" +
-                    "estão associados a ele: " + ids;
-            throw new AutorComLivroNoBancoException(mensagem);
+        String ids=null;
+        if (repository.existsLivrosByAutorId(autor.getId())) {
+            for (Livro livro: autor.getLivros()){
+                ids = livro.getId()+", ";
+            }
+
+            throw new AutorComLivroNoBancoException(
+                    "Não foi possível remover o autor de ID \'{ " + autor.getId() + " }\' pois os livros dos seguintes ID’s" +
+                            "estão associados a ele: " + ids
+            );
         }
     }
 }

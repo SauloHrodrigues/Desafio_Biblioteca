@@ -41,17 +41,6 @@ class LocatarioServiceImplTest {
     private LocatarioRepository repository;
 
 
-    @BeforeEach
-    void setUp(){
-        LocatarioFixture.id= 1L;
-        LocatarioFixture.nome = "José Martins";
-        LocatarioFixture.dataDeNascimento = LocalDate.parse("2000-09-12");
-        LocatarioFixture.cpf = "09067001082";
-        LocatarioFixture.sexo = Sexo.MASCULINO;
-        LocatarioFixture.telefone = "11991694599";
-        LocatarioFixture.email = "teste@gmail.com";
-    }
-
     @Test
     @DisplayName("Deve realizar o cadastro de um novo locatário com sucesso.")
     void deveCadastrarUmLocatarioComSucesso() {
@@ -60,8 +49,8 @@ class LocatarioServiceImplTest {
         Locatario locatario = LocatarioFixture.entity();
         Locatario locatarioSalvo = LocatarioFixture.entity();
 
-        when(repository.findByCpf(LocatarioFixture.cpf)).thenReturn(Optional.empty());
-        when(repository.findByEmail(LocatarioFixture.email)).thenReturn(Optional.empty());
+        when(repository.findByCpf(locatario.getCpf())).thenReturn(Optional.empty());
+        when(repository.findByEmail(locatario.getEmail())).thenReturn(Optional.empty());
         when(repository.save(any(Locatario.class))).thenReturn(locatario);
 
         LocatarioResponseDto resposta = service.cadastrar(dto);
@@ -80,15 +69,16 @@ class LocatarioServiceImplTest {
     void deveLancarExcessaoAoCadastrarCpfJaCadastrado() {
         NovoLocatarioDto dto = LocatarioFixture.request();
         Locatario locatario = LocatarioFixture.entity();
-        String cpf = locatario.getCpf();
+        String cpf = LocatarioFixture.cpf;
         String mensagemEsperada = "Já existe um 'locatario' registrado para o CPF '"+cpf+"'";
 
         when(repository.findByCpf(cpf)).thenReturn(Optional.of(locatario));
 
-        CpfJaCadastradoException ex = assertThrows(CpfJaCadastradoException.class,
+        CpfJaCadastradoException excessao = assertThrows(CpfJaCadastradoException.class,
                 ()->{service.cadastrar(dto);});
 
-        assertEquals(mensagemEsperada,ex.getMessage());
+        assertEquals("Já existe um 'locatario' registrado para o CPF '"+dto.cpf()+"'"
+        , excessao.getMessage());
     }
 
     @Test

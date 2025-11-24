@@ -6,59 +6,67 @@ import com.db.projeto.gerenciamento_de_biblioteca.dto.autor.NovoAutorDto;
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.Sexo;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Autor;
 import java.time.LocalDate;
-import java.util.HashSet;
 
 public class AutorFixture {
-    static Long id=0L;
 
-    public static NovoAutorDto requestDto(String nome, LocalDate dataDeNascimento, Sexo sexo, String cpf){
-        return new NovoAutorDto(
-                nome,
-                dataDeNascimento,
-                cpf,
-                sexo);
-    }
-
-    public static Autor entity(NovoAutorDto dto){
-        return entity(dto.nome(),dto.dataDeNascimento(),dto.sexo(), dto.cpf());
-    }
-
-    public static Autor entity(String nome, LocalDate dataDeNascimento, Sexo sexo, String cpf){
-        id++;
+    final static Autor AUTOR01() {
         return Autor.builder()
-                .id(id)
-                .nome(nome)
-                .dataDeNascimento(dataDeNascimento)
-                .cpf(cpf)
-                .sexo(sexo)
-                .livros(new HashSet<>())
+                .id(1L)
+                .nome("Jose maria")
+                .dataDeNascimento(LocalDate.of(2000, 02, 10))
+                .cpf("51752495098")
+                .sexo(Sexo.MASCULINO)
                 .build();
     }
 
-    public static Autor update(Autor autor, AtualizacaoAutorDto dto){
+    final static Autor AUTOR02() {
+        return Autor.builder()
+                .id(2L)
+                .nome("Cecília Meireles")
+                .dataDeNascimento(LocalDate.of(1901, 11, 7))
+                .cpf("12345678900")
+                .sexo(Sexo.FEMININO)
+                .build();
+    }
+
+    public static NovoAutorDto requestDto02() {
+        return new NovoAutorDto(
+                AUTOR02().getNome(), AUTOR02().getDataDeNascimento(), AUTOR02().getCpf(),
+                AUTOR02().getSexo());
+    }
+
+    public static NovoAutorDto requestDto01() {
+           return new NovoAutorDto(
+                    AUTOR01().getNome(), AUTOR01().getDataDeNascimento(), AUTOR01().getCpf(),
+                    AUTOR01().getSexo());
+    }
+
+    public static Autor entityAutor01() {
+        return AUTOR01();
+    }
+
+    public static Autor entityAutor02() {
+            return AUTOR02();
+    }
+
+    public static Autor update(Autor autor, AtualizacaoAutorDto dto) {
+        String nome = dto.nome() == null ? autor.getNome() : dto.nome();
+        LocalDate dataDeNascimento = dto.dataDeNascimento() == null ? autor.getDataDeNascimento() : dto.dataDeNascimento();
+        Sexo sexo = dto.sexo() == null ? autor.getSexo() : dto.sexo();
 
         return Autor.builder()
                 .id(autor.getId())
-                .nome(dto.nome())
-                .dataDeNascimento(dto.dataDeNascimento())
                 .cpf(autor.getCpf())
-                .sexo(dto.sexo())
                 .livros(autor.getLivros())
+                .nome(nome)
+                .dataDeNascimento(dataDeNascimento)
+                .sexo(sexo)
                 .build();
     }
 
-    public static AutorResponseDto responseDto(Autor autor){
-        return  new AutorResponseDto(
-                autor.getId(),
-                autor.getNome(),
-                autor.getDataDeNascimento(),
-                autor.getCpf(),
-                autor.getSexo(),
-                autor.getLivros()
-        );
-    }
-
-    public static AtualizacaoAutorDto atualizacaoDto(String nome, LocalDate dataDeNascimento, Sexo sexo){
-        return new AtualizacaoAutorDto(nome,dataDeNascimento, sexo);
+    public static AutorResponseDto response(Autor autor) {
+        return new AutorResponseDto(
+                autor.getId(), autor.getNome(), autor.getDataDeNascimento(),
+                autor.getCpf(), autor.getSexo(), autor.getLivros());
     }
 }

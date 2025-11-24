@@ -1,6 +1,8 @@
 package com.db.projeto.gerenciamento_de_biblioteca.repository;
 
 import com.db.projeto.gerenciamento_de_biblioteca.model.Aluguel;
+import com.db.projeto.gerenciamento_de_biblioteca.model.Autor;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -9,15 +9,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class AluguelFixiture {
-    public static Long id;
-    public static LocalDate retirada;
-    public static LocalDate devolucao;
-    public static boolean devolvido;
-    public static Long idDoLocatario;
-    public static List<Long> idsDosLivros;
-    public static List<Livro> livros;
-
-    public static Locatario locatario;
+    public static Long id= 1L;
+    public static LocalDate retirada = LocalDate.of(2025,11,9);
+    public static LocalDate devolucao = LocalDate.of(2025,11,15);
+    public static boolean devolvido = false;
+    public static Long idDoLocatario = LocatarioFixture.entity().getId();
+    public static List<Long> idsDosLivros = List.of(LivroFixture.livro01().getId(),LivroFixture.livro02().getId());
+    public static List<Livro> livros = List.of(LivroFixture.livro01());
+    public static Locatario locatario = LocatarioFixture.entity();
 
     public static NovoAluguelDto requestDto(){
         return new NovoAluguelDto(retirada,devolucao,devolucao,idDoLocatario,idsDosLivros);

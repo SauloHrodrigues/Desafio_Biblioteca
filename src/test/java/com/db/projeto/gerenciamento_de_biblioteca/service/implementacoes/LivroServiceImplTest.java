@@ -4,20 +4,16 @@ import com.db.projeto.gerenciamento_de_biblioteca.dto.livro.LivroAtualizacoesDto
 import com.db.projeto.gerenciamento_de_biblioteca.dto.livro.LivroResponseDto;
 import com.db.projeto.gerenciamento_de_biblioteca.dto.livro.NovoLivroDto;
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.CategoriaDoLivro;
-import com.db.projeto.gerenciamento_de_biblioteca.enuns.Sexo;
 import com.db.projeto.gerenciamento_de_biblioteca.enuns.StatusDoLivro;
 import com.db.projeto.gerenciamento_de_biblioteca.exception.autor.AutorNaoCadastradoException;
 import com.db.projeto.gerenciamento_de_biblioteca.fixture.AutorFixture;
-import com.db.projeto.gerenciamento_de_biblioteca.fixture.ListaDeLivrosFixture;
 import com.db.projeto.gerenciamento_de_biblioteca.fixture.LivroFixture;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Autor;
 import com.db.projeto.gerenciamento_de_biblioteca.model.Livro;
 import com.db.projeto.gerenciamento_de_biblioteca.repository.LivroRepository;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,40 +47,19 @@ class LivroServiceImplTest {
     @Mock
     private AutorServiceImpl autorService;
 
-    private Autor autorPauloCoelho;
-    private Autor autorGustavoCerbasi;
-
-    private List<Long> listaDeIds;
-    private List<Autor> listaDeAutores;
-
-    private Livro livro01;
-
-    private List<Livro> livros;
-
-    @BeforeEach
-    void setUp() {
-        autorPauloCoelho = AutorFixture.entity("paulo coelho", LocalDate.of(2017,9,12),
-                Sexo.MASCULINO,"76117960034");
-        autorGustavoCerbasi = AutorFixture.entity("Gustavo Cerbasi", LocalDate.of(2011,9,12),
-                Sexo.MASCULINO,"76117960034");
-
-        listaDeIds = new ArrayList<>();
-        listaDeAutores= new ArrayList<>();
-        livros = ListaDeLivrosFixture.livros();
-    }
-
-
     @Test
     @DisplayName("Deve cadastrar um novo livro com sucesso.")
     void cadastrar() {
-        Long idAutor = autorGustavoCerbasi.getId();
-        listaDeIds.add(idAutor);
-        listaDeAutores.add(autorGustavoCerbasi);
-        NovoLivroDto dto = LivroFixture.request("Dinheiro",LocalDate.of(2011,9,12),"1234567891234", CategoriaDoLivro.AUTOAJUDA, listaDeIds);
-        Livro livro = LivroFixture.entity(dto, autorGustavoCerbasi);
+        NovoLivroDto dto= LivroFixture.requestLivo01();
+        Autor autor = AutorFixture.entityAutor01();
+        Livro livro = LivroFixture.livro01();
+        List<Long> ids = List.of(autor.getId());
+        Set<Autor> autores = Set.of(autor);
 
-        when(autorService.buscar(idAutor)).thenReturn(Optional.of(autorGustavoCerbasi));
-        when(repository.save(livro)).thenReturn(livro);
+        for (Long id : ids) {
+            when(autorService.buscar(id)).thenReturn(Optional.of(autor));
+        }
+        when(repository.save(any(Livro.class))).thenReturn(livro);
 
         LivroResponseDto resposta = service.cadastrar(dto);
 
@@ -99,11 +74,9 @@ class LivroServiceImplTest {
     @Test
     @DisplayName("deve lancarExcecao ao tentar cadastrar livro com autores nao cadastrados.")
     void deveLancarExcecaoAoTentarCadastrarLivroComAutoresNaoCadastrados() {
-        Long idAutor = autorGustavoCerbasi.getId();
-        listaDeIds.add(idAutor);
-        listaDeAutores.add(autorGustavoCerbasi);
-        NovoLivroDto dto = LivroFixture.request("Dinheiro",LocalDate.of(2011,9,12),"1234567891234", CategoriaDoLivro.AUTOAJUDA, listaDeIds);
-        Livro livro = LivroFixture.entity(dto, autorGustavoCerbasi);
+        NovoLivroDto dto= LivroFixture.requestLivo01();
+        Autor autor = AutorFixture.entityAutor01();
+        Long idAutor = autor.getId();
 
         when(autorService.buscar(idAutor)).thenReturn(Optional.empty());
 
@@ -116,39 +89,46 @@ class LivroServiceImplTest {
     }
 
     @Test
-    @DisplayName("deve atualizar livro  cadastrados.")
+    @DisplayName("deve atualizar livro  cadastrados.") // parei aqui...
     void atualizar() {
+        Livro livro = LivroFixture.livro01();
+        Long id = livro.getId();
         LivroAtualizacoesDto atualizacoesDto = new LivroAtualizacoesDto("Chapelzinho vermelho",null,
                 null,CategoriaDoLivro.CONTOS);
+        Livro livroAtualizado = LivroFixture.update(livro,atualizacoesDto);
 
-        when(repository.findById(1L)).thenReturn(Optional.of(livro01));
-        when(repository.save(any(Livro.class))).thenReturn(livro01);
+        when(repository.findById(id)).thenReturn(Optional.of(livro));
+        when(repository.save(livroAtualizado)).thenReturn(livroAtualizado);
 
-        LivroResponseDto resposta = service.atualizar(livro01.getId(), atualizacoesDto);
+        LivroResponseDto resposta = service.atualizar(livro.getId(), atualizacoesDto);
 
         assertNotNull(resposta.id());
         assertEquals(atualizacoesDto.titulo(),resposta.titulo());
-        assertEquals(livro01.getPublicacao(),resposta.publicacao());
-        assertEquals(livro01.getPublicacao(),resposta.publicacao());
-        assertEquals(livro01.getIsbn(),resposta.isbn());
+        assertEquals(livro.getPublicacao(),resposta.publicacao());
+        assertEquals(livro.getPublicacao(),resposta.publicacao());
+        assertEquals(livro.getIsbn(),resposta.isbn());
         assertEquals(atualizacoesDto.categoriaDoLivro(),resposta.categoriaDoLivro());
     }
 
     @Test
     @DisplayName("deve apagar livro  cadastrados.")
     void apagar() {
-        Long id = livro01.getId();
+        Livro livro = LivroFixture.livro01();
+        Long id = livro.getId();
 
-        when(repository.findById(id)).thenReturn(Optional.of(livro01));
+        when(repository.findById(id)).thenReturn(Optional.of(livro));
 
         service.apagar(id);
 
-        verify(repository).delete(livro01);
+        verify(repository).delete(livro);
     }
 
     @Test
     @DisplayName("deve retornar todos os livros cadastrados.")
     void listarTodos() {
+        Livro livro01 = LivroFixture.livro01();
+        Livro livro02 = LivroFixture.livro02();
+        List<Livro>livros = List.of(livro01,livro02);
         Pageable pageable = PageRequest.of(0,15);
         Page<Livro> pageLivros = new PageImpl<>(livros,pageable,livros.size());
 
@@ -156,7 +136,12 @@ class LivroServiceImplTest {
 
         Page<LivroResponseDto> resposta = service.listarTodos(pageable);
 
-        assertEquals(15,resposta.getContent().size());
+        assertEquals(livros.size(),resposta.getContent().size());
+        assertEquals(livro01.getTitulo(), resposta.getContent().get(0).titulo());
+        assertEquals(livro02.getTitulo(), resposta.getContent().get(1).titulo());
+        assertEquals(livro01.getIsbn(), resposta.getContent().get(0).isbn());
+        assertEquals(livro02.getIsbn(), resposta.getContent().get(1).isbn());
+
         verify(repository).findAll(pageable);
     }
 
@@ -164,7 +149,7 @@ class LivroServiceImplTest {
     @Test
     @DisplayName("deve retornar um livro procurado por id")
     void buscarPorId() {
-        Livro livro = ListaDeLivrosFixture.livro01;
+        Livro livro = LivroFixture.livro01();
         Long id = livro.getId();
 
         when(repository.findById(id)).thenReturn(Optional.of(livro));
@@ -181,94 +166,81 @@ class LivroServiceImplTest {
     @Test
     @DisplayName("deve retornar um livro procurado por titulo")
     void buscarPorTitulo() {
-        String titulo = "dinheiro";
+        Livro livro01 = LivroFixture.livro01();
+        String titulo = "Inteligentes";
         Pageable pageable = PageRequest.of(0, 10);
-        List<Livro> filtrados = livros.stream()
-                .filter(l -> l.getTitulo().toLowerCase().contains(titulo))
-                .toList();
-
-        Page<Livro> pageFiltrada = new PageImpl<>(filtrados, pageable, filtrados.size());
+        List<Livro> livros = List.of(livro01);
+        Page<Livro> pageLivros = new PageImpl<>(livros, pageable, livros.size());
 
         when(repository.findByTituloContainingIgnoreCase(titulo, pageable))
-                .thenReturn(pageFiltrada);
+                .thenReturn(pageLivros);
 
         Page<LivroResponseDto> resposta = service.buscarPorTitulo(titulo, pageable);
 
         assertNotNull(resposta);
-        assertFalse(resposta.isEmpty());
-        assertTrue(resposta.getContent().stream()
-                        .allMatch(l -> l.titulo().toLowerCase().contains(titulo)),
-                "Todos os livros devem conter '"+titulo+"' no título");
-        assertEquals(filtrados.size(), resposta.getTotalElements(),
-                "A quantidade de livros deve corresponder ao filtro");
+        assertTrue(resposta.getContent().get(0).titulo().contains(titulo));
+
     }
 
     @Test
     @DisplayName("deve retornar um livro procurado por Categoria")
     void buscarPorCategoria() {
-        CategoriaDoLivro categoria = CategoriaDoLivro.AUTOAJUDA;
-        Pageable pageable = PageRequest.of(0, 10);
-        List<Livro> filtrados = livros.stream()
-                .filter(l -> l.getCategoriaDoLivro() == categoria)
-                .toList();
+        Livro livro= LivroFixture.livro01();
+        CategoriaDoLivro categoria = livro.getCategoriaDoLivro();
 
-        Page<Livro> pageFiltrada = new PageImpl<>(filtrados, pageable, filtrados.size());
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Livro> livros = List.of(livro);
+        Page<Livro> pageLivros = new PageImpl<>(livros, pageable, livros.size());
 
         when(repository.findByCategoriaDoLivro(categoria, pageable))
-                .thenReturn(pageFiltrada);
+                .thenReturn(pageLivros);
 
         Page<LivroResponseDto> resposta = service.buscarPorCategoria(categoria, pageable);
 
         assertNotNull(resposta);
         assertFalse(resposta.isEmpty());
-        assertTrue(resposta.getContent().stream()
-                        .allMatch(l -> l.categoriaDoLivro()==categoria),
-                "Todos os livros devem conter '"+categoria+"' no título");
-        assertEquals(filtrados.size(), resposta.getTotalElements(),
-                "A quantidade de livros deve corresponder ao filtro");
+        assertEquals(livros.size(), resposta.getTotalElements());
+        assertEquals(livros.get(0).getCategoriaDoLivro(), resposta.getContent().get(0).categoriaDoLivro());
+
     }
 
     @Test
     @DisplayName("deve retornar um livro procurado por Autor")
     void buscarPorAutor() {
-        Autor autor = ListaDeLivrosFixture.autorGustavoCerbasi;
-        long id = autor.getId();
+        Livro livro = LivroFixture.livro01();
+        long id = livro.getId();
+        Autor autor = livro.getAutores().iterator().next();
         Pageable pageable = PageRequest.of(0, 10);
-        List<Livro> filtrados = livros.stream()
-                .filter(l -> l.getAutores().contains(autor))
-                .toList();
+        List<Livro> livros = List.of(livro);
 
-        Page<Livro> pageFiltrada = new PageImpl<>(filtrados, pageable, filtrados.size());
+        Page<Livro> pageLivros = new PageImpl<>(livros, pageable, livros.size());
 
         when(autorService.buscar(id)).thenReturn(Optional.of(autor));
-        when(repository.findByAutores_Id(id, pageable)).thenReturn(pageFiltrada);
+        when(repository.findByAutores_Id(id, pageable)).thenReturn(pageLivros);
 
         Page<LivroResponseDto> resposta = service.buscarPorAutor(id, pageable);
 
         assertNotNull(resposta);
         assertFalse(resposta.isEmpty());
-        assertTrue(resposta.getContent().stream()
-                        .allMatch(l -> l.idAutores().contains(id)),
-                "Todos os livros devem conter o id "+id);
-        assertEquals(filtrados.size(), resposta.getTotalElements(),
-                "A quantidade de livros deve corresponder ao filtro");
+        assertEquals(livros.size(), resposta.getTotalElements());
 
     }
 
     @Test
     @DisplayName("deve retornar um autor cadastrado ")
     void validaAutor() {
-        Long id = autorGustavoCerbasi.getId();
+        Autor autor = AutorFixture.entityAutor01();
+        Long id = autor.getId();
 
-        when(autorService.buscar(id)).thenReturn(Optional.of(autorGustavoCerbasi));
+        when(autorService.buscar(id)).thenReturn(Optional.of(autor));
 
         Autor resposta = service.validaAutor(id);
 
         assertEquals(id,resposta.getId());
-        assertEquals(autorGustavoCerbasi.getNome(), resposta.getNome());
-        assertEquals(autorGustavoCerbasi.getCpf(), resposta.getCpf());
-        assertEquals(autorGustavoCerbasi.getDataDeNascimento(), resposta.getDataDeNascimento());
-        assertEquals(autorGustavoCerbasi.getLivros(), resposta.getLivros());
+        assertEquals(autor.getNome(), resposta.getNome());
+        assertEquals(autor.getCpf(), resposta.getCpf());
+        assertEquals(autor.getDataDeNascimento(), resposta.getDataDeNascimento());
+        assertEquals(autor.getLivros(), resposta.getLivros());
     }
 
     @Test
@@ -309,16 +281,12 @@ class LivroServiceImplTest {
     @Test
     @DisplayName("deve retornar um livro salvo.")
     void salvar() {
-        Livro livro = ListaDeLivrosFixture.livro09;
+        Livro livro = LivroFixture.livro01();
 
         when(repository.save(livro)).thenReturn(livro);
 
         service.salvar(livro);
 
         verify(repository).save(livro);
-    }
-
-    @Test
-    void buscar() {
     }
 }

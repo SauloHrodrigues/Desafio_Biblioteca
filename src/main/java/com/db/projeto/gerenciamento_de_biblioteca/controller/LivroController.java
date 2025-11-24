@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +31,7 @@ public class LivroController  { //implements LivroSwaggerI
 //    @Override
     @PostMapping
     public ResponseEntity<LivroResponseDto> cadastrar(@RequestBody @Valid NovoLivroDto dto) {
-        LivroResponseDto responseDto = serviceI.cadastrar(dto);
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(serviceI.cadastrar(dto));
     }
 
 //    @Override

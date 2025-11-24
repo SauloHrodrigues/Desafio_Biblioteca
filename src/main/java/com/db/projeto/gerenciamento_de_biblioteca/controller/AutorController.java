@@ -68,4 +68,6 @@ public class AutorController implements AutorSwaggerI {
         serviceI.apagar(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }

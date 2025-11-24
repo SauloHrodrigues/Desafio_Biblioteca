@@ -14,13 +14,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class LocatarioFixture {
-    public static Long id;
-    public static String nome;
-    public static LocalDate dataDeNascimento;
-    public static String cpf;
-    public static Sexo sexo;
-    public static String telefone;
-    public static String email;
+    public static Long id = 1L;
+    public static String nome = "João Victor";
+    public static LocalDate dataDeNascimento = LocalDate.of(2000,9,21);
+    public static String cpf = "45535805009";
+    public static Sexo sexo= Sexo.MASCULINO;
+    public static String telefone = "19999335566";
+    public static String email = "teste@gmail.com";
 
     Set<Aluguel> alugueis = new HashSet<>();
 
@@ -31,11 +31,13 @@ public class LocatarioFixture {
     }
 
     public static Locatario entity(){
+        String cpfTratado= cpf.replaceAll("\\D", "");
+
         Locatario locatario= new Locatario();
         locatario.setId(id);
         locatario.setNome(nome);
         locatario.setDataDeNascimento(dataDeNascimento);
-        locatario.setCpf(cpf);
+        locatario.setCpf(cpfTratado);
         locatario.setSexo(sexo);
         locatario.setTelefone(telefone);
         locatario.setEmail(email);
